@@ -1,0 +1,72 @@
+
+* exec:
+   from handy import readable
+   from strongbox import BoxView
+   from zebra import html
+
+<!-- cornerops site list -->
+
+<h2>usage stats</h2>
+
+<div style="float:left; padding:0; margin:0;">
+<div class="miniform" style="width:265px; padding:0px; font-weight:bold">
+<span style="float:right">
+    [<a href="#"
+       onclick="javascript:alert('This chart shows your bandwidth usage for the past thirty days compared to your quota. For more detail, consult the logfile reports for each site.')" class="help">?</a>]</span>
+bandwidth
+</div>
+<img height="100" alt="bandwidth chart"
+     style="padding:0; margin:0;" width="265"
+     src="bandwidthchart.app?username={:user.username:}"/>
+</div>
+
+<div style="float:right; background: #eee; height:115px">
+<div class="miniform" style="font-weight:bold">
+<span style="float:right">
+    [<a href="#"
+       onclick="javascript:alert('The diskspace report is updated once a night and includes space taken up by your mail, websites, logfiles, and other files. The best way to clear off space is to delete or zip up old logfiles.')" class="help">?</a>]</span>
+usage
+</div>
+using {:readable(user.diskusing):} of {:readable(user.diskquota):}
+</div>
+
+<div style="clear:both">
+<br/>
+<h2><b>your sites</b></h2>
+
+<table class="full" cellspacing="4" cellpadding="0">
+
+* exec:
+     sites=[BoxView(s) for s in user.sites] #@TODO: ick :(
+     sites.sort(lambda a,b: cmp(a.domain.domain, b.domain.domain))
+     
+* for sites:
+     * body:
+         * exec:
+             main = domain.domain
+         <tr>
+           <td>
+           <a href="{:fallbackURL:}">{:domain.domain:}</a>
+           </td>
+           <td style="text-align:right">
+             [<a href="user.app?action=edit_site&amp;name={:domain.domain:}">config</a>]
+             [<a href="analog/{:user.username:}/{:domain.domain:}/analog.html">logs</a>]
+           </td>
+         </tr>
+         * exec:
+            aliasNames=[a.domain for a in aliases if a.domain!=domain.domain];
+         * if aliasNames:
+            <tr>
+             <td colspan="2" style="padding-left:10px; font-size:smaller">
+               alias: {:', '.join(aliasNames):}
+             </td>
+            </tr>
+</table>
+
+<p style="font-size:smaller;">
+  The site links go to cornerhost-specific fallback URLs.<br/>
+  They will work even if your DNS servers are not configured.
+</p>
+
+
+</div>

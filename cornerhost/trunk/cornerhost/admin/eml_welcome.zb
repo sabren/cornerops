@@ -1,0 +1,209 @@
+
+Hi {:fname:},
+
+Thanks for the order! Your account is ready to go.
+Here is the information you'll need to access it:
+
+#[ login ]##################################################
+
+ username: {:username:}
+ password: 
+   server: {:server.name:}.sabren.com
+
+This will let you access your account through:
+
+ - FTP/Secure FTP
+ - POP3/IMAP email clients
+* if plan=='shell':
+   {:" ":}- secure shell
+* #
+
+To publish content to your site, upload it to the
+* if len(domains)==1:
+    * for domains:
+        web/{:domain:} directory.
+
+        * if domain.endswith('.sabren.com'):
+            Your site will then show up at:
+
+                 http://{:domain:}/
+
+            If you purchase your own domain later, you can add it 
+            to your account through the control panel. (See below).
+
+            (I usually recommend http://www.godaddy.com/ for 
+            purchasing domains. They're cheap and I've never had a 
+            problem with them.)
+
+* el:
+    web/{DOMAIN} directory, where {DOMAIN} is one of
+    your domains:
+
+    * for domains:
+        {:" ":}- {:domain:}
+    *# 
+
+If you're new to FTP, I recommend downloading
+a graphical Secure FTP client. Two popular 
+options are:
+
+   win: http://winscp.net/eng/download.php
+   mac: http://rsug.itd.umich.edu/software/fugu/
+
+ 
+
+#[ dns ]####################################################
+
+To actually point a domain at the server, you will
+need to update the domain's DNS records to:
+
+   primary dns: ns1.sabren.com (67.19.173.68)
+ secondary dns: ns2.sabren.com (67.19.173.20)
+
+You should be able to do this at the site where you bought
+the domain. If you need help with this, please let me know.
+
+Setting this up usually takes a day or two, because the
+information needs to make its way around the internet.
+While you are waiting, you can view your site at:
+
+* if len(domains)==1:
+    * #
+        http://{:domains[0]["domain"]:}.{:shortname:}.sabren.com/
+* el:
+    * #
+        http://{DOMAIN}.{:shortname:}.sabren.com/
+    eg:
+        http://{:domains[0]["domain"]:}.{:shortname:}.sabren.com/
+*#
+
+NOTE: If you bought your domain from Network Solutions
+(Verisign), setting up DNS can be a little confusing.
+The correct procedure is described here:
+
+   http://customersupport.networksolutions.com/article.php?id=114
+
+ 
+#[ email ]##################################################
+
+The server is accepting mail for your domain, and all
+mail to any username at that domain will be forwarded
+to your account here.
+
+To check it, create a new pop3 or IMAP account in your
+mail software, using the following information:
+
+     email address: whatever-you-want@your-domain.com
+          username: your username
+          password: your password
+  POP3/IMAP server: {:server.name:}.sabren.com
+       SMTP server: [provided by your isp]
+
+Some ISPs won't let you use their SMTP server to send
+mail for your domain. Others won't let you connect to
+outside SMTP servers. If you can't send mail using their
+server, use {:server.name:}.sabren.com instead.
+
+However, if you use {:server.name:} as your SMTP server, 
+you must turn on SMTP authentication. This is sometimes 
+called "my outgoing mail server requires authentication".
+
+
+#[ control panel ]##########################################
+
+* if plan.name =='basic':
+    You can view your traffic statistics, configure  email
+    forwarding rules, and set up new sites and domains from 
+    the control panel. To use it, log in with the above 
+    username and password at:
+* el:
+    You can view your traffic statistics, configure  email
+    forwarding rules, and set up new sites, domains and
+    databases from the control panel. To use it, log in
+    with the above username and password at:
+
+*#
+
+    https://secure.sabren.com/cornerhost/controls/
+
+(You can also log in from the cornerhost.com home page)
+
+
+* if plan.name in ['script','shell']:
+    #[ cgi ]####################################################
+
+    You can put your CGI scripts anywhere. There's nothing special 
+    about a "cgi-bin" directory the way I have things set up.
+    
+    What you want to do is just upload the file to your website,
+    and make sure:
+
+       - the file is named *.cgi
+
+       - the mode is set to 755
+         (if you're using the windows command line FTP
+         program, you can use "quote site chmod 755 filename.cgi", 
+         otherwise see the docs for your ftp program)
+
+      -  You need to upload the files as ASCII, not binary.
+         If you try to run a CGI script uploaded in binary
+         mode, the last character of the "#!/usr/bin/whatever"
+         is a dos newline, which for some reason, unix thinks
+         is part of the actual program name (so, for example,
+         it would try  "perl<newline>" instead of just "perl")
+
+
+* if plan.name == 'shell':
+    #[ shell access ]###########################################
+    
+    To connect to your account via secure shell, you will
+    need an ssh client that supports the ssh2 protocol.
+    For windows users, I recommend PuTTY, which can be
+    downloaded from:
+    
+      http://www.putty.nl/
+    
+    
+#[ inner circle users group ]###############################
+
+You're invited to join the cornerhost inner circle.
+This is a private mailling list where cornerhost
+customers can ask questions, learn from each other,
+show off their sites, and just have fun. It's also
+the best place to voice your ideas about improving
+cornerhost. You can subscribe online at:
+
+http://www.cornerhost.com/mailman/listinfo/innercircle
+ 
+
+
+#[ online help ]############################################
+
+There is also a FAQ and set of user-editable hints at
+the cornerhost wiki:
+
+  http://cornerhost.net/wiki/
+
+This is a great place to start if you need help.
+
+
+
+#[ payment ]################################################
+
+You ordered the {:plan.name:} account, which costs ${:plan.monthlyCost:} a month 
+or ${:plan.monthlyCost * 10:} a year. You can pay for your account online at:
+
+    http://www.cornerhost.com/payment/
+
+That should be about it. Let me know if you have any
+problems or questions and thanks again for signing up!
+
+Sincerely,
+
+Michal J Wallace
+Sabren Enterprises, Inc.
+-------------------------------------
+contact: michal@sabren.com
+hosting: http://www.cornerhost.com/
+my site: http://www.withoutane.com/
+-------------------------------------

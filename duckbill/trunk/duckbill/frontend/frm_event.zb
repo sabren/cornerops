@@ -1,0 +1,75 @@
+*# event form
+* include dsp_head;
+* exec:
+    from zebra import html
+    from duckbill import Event
+    if not scope.get("accountID"):
+        scope["accountID"] = account.ID
+    
+<form action="index.py" method="post" style="width:50%; float: left;">
+{:html.hidden("what", "event"):}
+{:html.hidden("accountID", accountID):}
+
+* if ID:
+    edit Event
+    {:html.hidden("ID", ID):}
+* el:
+    add new Event
+
+<table>
+
+<tr>
+  <td>event</td>
+  <td>{:html.select("event", Event.event.okay, event):}</td>
+</tr>       
+
+<tr>
+  <td>posted</td>
+  <td>{:html.text("posted", posted):}</td>
+</tr>       
+
+<tr>
+  <td>maturity</td>
+  <td>{:html.text("maturity", maturity):}</td>
+</tr>       
+
+<tr>
+  <td>amount</td>
+  <td>{:html.text("amount", amount):}</td>
+</tr>       
+
+<tr>
+  <td>note</td>
+  <td>{:html.text("note", note):}</td>
+</tr>       
+
+<tr>
+  <td>adminnote</td>
+  <td>{:html.text("adminnote", adminnote):}</td>
+</tr>       
+
+<tr>
+  <td>source</td>
+  <td>{:html.select("source", ['other', 'n/a','paypal','bofa'], source):}</td>
+</tr>       
+
+<tr>
+  <td>refnum</td>
+  <td>{:html.text("refnum", refnum):}</td>
+</tr>       
+
+</table>
+<input type="submit" name="action" value="save">
+&nbsp;&nbsp;&nbsp;
+<button onclick="document.location='index.py?action=show&what=account&ID={:accountID:}'">back to account</button>
+</form>
+
+* if event=='payment' and (account is not None):
+    <pre style="color: black; background: white; width: 50%">
+    * include eml_receipt;
+    </pre>
+
+
+<script language="javascript">
+  document.all['amount'].focus();
+</script>

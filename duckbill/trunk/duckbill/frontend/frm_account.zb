@@ -1,0 +1,109 @@
+*# duckbill account admin form
+*# $Id: frm_account.zb,v 1.11 2007/03/30 00:38:10 sabren Exp $
+
+* include dsp_head;
+
+* for errors:
+    <p>ERROR: {:error:}</p>
+
+<form method="POST" action="index.py">
+  <input type="hidden" name="what" value="account">
+
+* exec:
+    from zebra import html
+    from duckbill import Account
+* if ID:
+    <b>edit this account:</b>
+    <input type="hidden" name="ID" value="{:ID:}">
+* el:
+    <b>add a new account:</b>
+
+</td>
+
+<table border="1">
+  <tr>
+    <td>brand:</td>
+    <td>{:html.select("brand", Account.brand.okay, brand):}</td>
+  </tr>
+  <tr>
+    <td>account:</td>
+    <td>{:html.text("account", account):}</td>
+  </tr>
+  <tr>
+    <td>status:</td>
+    <td>{:html.select("status", Account.status.okay,  status):}</td>
+  </tr>
+  <tr>
+    <td>statements:</td>
+    <td>{:html.select("statementStrategy", Account.statementStrategy.okay, statementStrategy):}</td>
+  </tr>
+  <tr>
+    <td>warned:</td>
+    <td>{:html.text("warned", warned):}</td>
+  </tr>
+  <tr>
+    <td>first name:</td>
+    <td>{:html.text("fname", fname):}</td>
+  </tr>
+  <tr>
+    <td>last name:</td>
+    <td>{:html.text("lname", lname):}</td>
+  </tr>
+  <tr>
+    <td>company:</td>
+    <td>{:html.text("company", company):}</td>
+  </tr>
+  <tr>
+    <td>email</td>
+    <td>{:html.text("email", email):}</td>
+  </tr>
+  <tr>
+    <td>cc:</td>
+    <td>{:html.text("email2", email2):}</td>
+  </tr>
+  <tr>
+    <td>phone</td>
+    <td>{:html.text("phone", phone):}</td>
+  </tr>
+
+  <tr>
+    <td>address1</td>
+    <td>{:html.text("address1", address1):}</td>
+  </tr>
+  <tr>
+    <td>address2</td>
+    <td>{:html.text("address2", address2):}</td>
+  </tr>
+  <tr>
+    <td>city</td>
+    <td>{:html.text("city", city):}</td>
+  </tr>
+  <tr>
+    <td>state</td>
+    <td>{:html.text("state", state):}</td>
+  </tr>
+  <tr>
+    <td>postal</td>
+    <td>{:html.text("postal", postal):}</td>
+  </tr>
+  <tr>
+    <td>countryCD</td>
+    <td>{:html.text("countryCD", countryCD):}</td>
+  </tr>
+  <tr>
+    <td>opened:</td>
+    <td>{:html.text("opened", opened):}</td>
+  </tr>
+  <tr>
+    <td>closed:</td>
+    <td>{:html.text("closed", closed):}</td>
+  </tr>
+  <tr>
+    <td>nextDue:</td>
+    <td>{:html.text("nextDue", nextDue):}</td>
+  </tr>
+</table>
+
+<br/>
+<input name="action" value="save" type="submit">
+</form>

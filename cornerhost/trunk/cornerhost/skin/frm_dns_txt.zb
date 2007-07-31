@@ -1,0 +1,55 @@
+* exec:
+  from zebra import html
+  from cornerhost import DNSRec, Domain
+  from cornerhost.safety import safeDNSRec, safeDomain
+
+  # @TODO: this is duplicated in _txt and _mx
+  domains=user.domainNames(onlyZones=False)
+  if req.get("domain") and req.get("ID"):
+    dom = safeDomain(user, req["domain"])
+    dns = safeDNSRec(dom, int(req["ID"]))
+  else:
+    dns = DNSRec(domain=Domain(domain='dummy.domain'))
+
+
+* if dns.ID:
+    <h2>edit custom TXT record</h2>
+* el:
+    <h2>add custom TXT record</h2>
+
+<div style="width: 50%; padding-bottom:50px; float: left">
+<form action="user.app" method="post">
+  <input type="hidden" name="action" value="save_dns_txt"/>
+  <input type="hidden" name="rectype" value="TXT"/>
+  
+  * if dns.ID:
+    {:html.hidden("ID", dns.ID):}
+  <table>
+  <tr><td>domain:</td>
+      <td>{:html.select("domain", domains, dns.domain.domain):}</td></tr>
+  <tr><td>value:</td>
+      <td>{:html.text("value", dns.value.replace('"',"&quot;")):}</td>
+  </table>
+  <br/>
+  <input type="submit" value="save record"/>
+</form>
+
+* if dns.ID:
+  <form action="user.app" method="post">
+    <br/>
+    <input type="hidden" name="action" value="delete_record"/>
+    {:html.hidden("ID", dns.ID):}
+    {:html.hidden("domain_in", dns.domain.domain):}
+    <input type="submit" value="delete record"/>
+  </form>
+</div>
+
+<div>
+<p>
+  TXT records are essentially comments, but are also be used in the
+  <a href="http://spf.pobox.com/">sender policy framework</a>
+  to help prevent spammers and viruses from sending fake emails 
+  from your domain. The <a href="http://spf.pobox.com/wizard.html">SPF
+  wizard</a> can help you build a valid TXT record.
+</p>
+</div>

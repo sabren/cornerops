@@ -1,0 +1,3 @@
+DirectoryIndex admin.app
+RewriteEngine On
+RewriteRule analog(/.*) user.app?action=analog&path=$1

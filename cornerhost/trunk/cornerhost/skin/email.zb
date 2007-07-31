@@ -1,0 +1,52 @@
+
+* if changed:
+    <p style="color:green"><b>Configuration updated!</b></p>
+
+<h2>email rule editor</h2>
+
+* if [d for d in user.domains if not d.domain.endswith('.sabren.com')]:
+    <p style="margin-top:0px;">
+       These rules tell the server how to
+       process your mail. Each domain has one "catch-all" rule, plus
+       any number of rules for specific addresses. Click on a rule to
+       edit it, or click "add rule" to create a new rule for a domain.
+    </p>
+* el:
+    <p>You do not yet have any domains associated with
+       your account. If you add a domain later, you will
+       be able to manage email addresses for it here.</p>
+
+* exec:
+    def nicerule(mailto):
+        if mailto=="~":
+            return user.username
+        elif mailto=="error:nouser":
+            return "<em>(bounce)</em>"
+        return mailto 
+
+<table class="email" border="0" cellspacing="0" cellpadding="2">
+* exec:
+    from strongbox import BoxView
+    domains = [BoxView(d) for d in user.domains]
+    domains.sort(lambda a,b: cmp(a.domain, b.domain))
+* for domains:
+    * if (processmail) and (not domain.endswith('.sabren.com')):
+        <tr><td style="background:#fe9"><b>@{:domain:}</b></td>
+            <td width="25%" style="background:#fe9" align="right">
+                [<a href="user.app?action=add_rule&amp;domName={:domain:}">add rule</a>]</td></tr>
+           <tr class="mailrule"><td colspan="2" class="indent"><a 
+               href="user.app?action=edit_catchall&amp;domName={:domain:}"
+               ><em>(catchall)</em> &rarr; {:nicerule(mailto):}</a></td></tr>
+        * exec:
+            rules.sort(lambda a,b: cmp(a.virtuser, b.virtuser))
+        * for rules:
+            <tr class="mailrule"><td colspan="2" class="indent">
+                <a href="user.app?action=edit_rule&amp;virtuser={:virtuser:}&amp;domName={:domain.domain:}"
+                   >{:virtuser:} &rarr; {:nicerule(mailto):}</a>
+                 </td>
+            </tr>
+        
+</table>
+
+
+

@@ -1,0 +1,33 @@
+
+<form action="mailer.app" method="POST">
+
+<table>
+<tr><td>from:</td>
+    <td><input tabindex="1" type="text" name="from" size="50"
+               value="Michal Wallace &lt;michal@sabren.com&gt;"></td>
+    <td align="right"><input tabindex="7" type="submit" name="action" value="send"></tr>
+<tr><td>to:</td>
+    <td colspan="2"><input tabindex="2" type="text" name="to" size="50"
+               value="{:fname:}{:" ":}{:lname:}{:" ":}&lt;{:email:}&gt;"></td></tr>
+<tr><td>subject:</td>
+    <td colspan="2"><input tabindex="3" type="text" name="subject" size="50"
+               value="{:subject:}"></td></tr>
+
+<tr><td>cc:</td>
+    <td colspan="2"><input tabindex="4" type="text" name="cc" size="50"
+               value="{?cc?}"></td></tr>
+
+<tr><td>bcc:</td>
+    <td colspan="2"><input tabindex="5" type="text" name="bcc" size="50"
+               value="{?bcc?}"></td></tr>
+
+<tr><td colspan="3">
+
+<textarea tabindex="6" name="message" rows="20" cols="75">{:message:}</textarea>
+
+</td></tr>
+
+</table>
+
+</form>
+

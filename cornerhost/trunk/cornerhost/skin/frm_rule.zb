@@ -1,0 +1,105 @@
+
+* exec:
+    from zebra import html
+    from cornerhost import EmailRule
+    from cornerhost.safety import safeDomain, safeEmailRule
+    from strongbox import BoxView
+    
+    """
+    @TODO: clean this up!
+    it's ugly because the same template
+    is being used for both add_rule, edit_rule, and edit_catchall.
+    """
+    domName = req.get('domName')
+    assert domName, "domName parameter is required"
+    d = safeDomain(user, domName)
+    rule = EmailRule(domain=d, mailto=d.mailto)
+
+    # ugh. this is a kludge
+    # the situation is this: if you add a new rule, 
+    # and no mailbox name is given, it gives an
+    # error and re-shows the form. but both the
+    # catchall and normal rule commands use this
+    # form. So testing on "virtuser" when the
+    # virtuser wasn't given causes it to show
+    # the wrong form.
+    #
+    # I think the real fix is to break this into
+    # two completely separate forms, possibly with
+    # a common central widget in an include file.
+        
+    if (req.get("virtuser")):
+        # edit rule
+        what = 'rule'
+        rule = safeEmailRule(d, req["virtuser"])
+        action ='save rule'
+    elif req.get('action') == 'save new rule':
+        what = 'rule'
+        action = 'save new rule'
+        rule.mailto = '~'
+    elif (req.get('action') == 'add_rule'):
+        # add rule
+        what = 'rule'
+        action ='save new rule'
+    else:
+        # catchall rule
+        what = 'catchall'
+        action = 'save catchall'
+        
+    boxes = [BoxView(b) for b in  user.boxes]
+
+<form action="user.app" method="post">
+{:html.hidden("domName", domName):}
+
+* if rule.ID or what=='catchall':
+    <h2>edit this rule</h2>
+* el:
+    <h2>new email rule</h2>
+
+* if what=='rule':
+    <p>Mail for {:html.text("virtuser", rule.virtuser, 'ID="virtuser" style="text-align:right"'):}@{:domName:} should:</p>
+* ef what=='catchall':
+    <p>By default, mail for <b>{:domName:}</b> should:</p>
+
+<blockquote>
+  {:html.radio("rule", rule.mailto=="~", "main", 'ID="rule"'):}
+     go into your main cornerhost mailbox (<em>{:user.username:}</em>)<br/>
+
+  * for boxes:
+      {:html.radio("rule", rule.mailto==mailbox, mailbox):}
+      go into mailbox: {:mailbox:}<br/>
+
+  * exec:
+     newmailto = rule.mailto or "someone@else.com"
+     if "@" not in rule.mailto:
+         newmailto = "someone@else.com"
+         
+  {:html.radio("rule", "@" in rule.mailto, "forward"):}
+     forward to {:html.text("mailto", newmailto):}<br/>
+
+
+  {:html.radio("rule", rule.mailto=='error:nouser', "bounce"):}
+     bounce with a "no such user" message
+     
+  <br/>&nbsp;<br/>
+  
+  <input type="submit" name="action" value="{:action:}"/>
+  {:html.hidden("oldDom", rule.domain.domain):}
+
+  * if rule.ID and (what!='catchall'):
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      {:html.hidden("ID", rule.ID):}
+      <input type="submit" name="action" value="delete rule"/>
+
+</blockquote>
+</form>
+
+
+<script language="javascript">
+* if what=='catchall':
+    document.getElementById("rule").focus();
+* el:
+    document.getElementById("virtuser").focus();
+    document.getElementById("virtuser").select();
+</script>
+

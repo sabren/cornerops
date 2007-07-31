@@ -1,0 +1,18 @@
+
+RewriteEngine On
+RewriteRule analog(/.*) user.app?action=analog&path=$1
+RewriteRule CVS/.* .cvs
+DirectoryIndex user.app
+
+<Files "*.*">
+Deny from all
+</Files>
+<Files "*.app">
+Allow from all
+</Files>
+<Files "*.css">
+Allow from all
+</Files>
+<Files "*.png">
+Allow from all
+</Files>

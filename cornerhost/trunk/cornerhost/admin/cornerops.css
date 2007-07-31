@@ -1,0 +1,246 @@
+/** cornerhost control panel css **/
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background: white url(toolback.png);
+  background-repeat: repeat-y;
+  margin: 0;
+  padding:0;
+}
+
+body, p, table {
+  font-family: verdana, arial, helvetica;
+  font-size: 10pt;
+}
+
+h2 {
+  font-size:10pt;
+  margin-top:10pt;
+  padding-bottom: 10px;
+  margin-bottom: 13px;
+  border-bottom: solid silver 1px;
+}
+
+#logo {
+ position: absolute;
+ background:white;
+ margin-bottom:0;
+ padding:0;
+ margin:0;
+ padding-left:5px;
+ width:160px;
+ z-index: 1;
+}
+
+
+/**************************************/
+
+#toolbox {
+  position: absolute;
+  top: 60px;
+  left: 0px;
+  bottom: 0px;
+  width: 155px;
+  padding:0;
+  padding-left: 10px;
+  margin-top: 0;
+  z-index: 1;
+}
+
+#toolbox ul {
+  padding:0;
+  margin:0;
+}
+
+#toolbox li {
+  list-style:none;
+  font-weight:normal;  
+}
+
+#toolbox li.group {
+  padding-top: 10px;
+  font-weight:bold;
+}
+
+
+/**************************************/
+
+#user {
+ position: absolute;
+ top: 18px;
+ width: 200px;
+ text-align:right;
+ left: 550px;
+ z-index: 2;
+}
+
+#navbar {
+  position:absolute;
+  top: 18px;
+  left:200px;
+  width:540px;
+  height:25px;
+  margin:0;
+  padding: 0;
+  z-index:1;
+}
+
+#navbarBack {
+   background: #eee url(navback.png);
+   background-repeat: repeat-y;
+   width:100%;
+   position: absolute;
+   left:0;
+   top:0;
+   z-index:0;
+   height:53px;
+}
+
+
+/**************************************/
+
+#holder {
+   position: absolute;
+   top: 57px;
+   left: 200px;
+   padding: 0px;
+   width:550px;
+}
+
+
+
+a {
+    text-decoration: none;
+}
+
+
+
+#adminarea {
+  width:100%;
+  margin-top: 1em;
+  background: #eee;
+  margin-bottom: 1em; 
+}
+
+#adminarea div {
+  width: 25%;
+  float: left;
+}
+
+
+.component {
+    background: white;
+    display: block;
+    padding: 5px;
+}
+
+
+
+table.quota {
+  background: #eee;
+}
+table.quota th {
+  text-align: left;
+}
+
+.miniform {
+    width: 265px;
+}
+
+.miniform {
+   color: black;
+   background: white;
+}
+
+.miniform  td {
+   background: #eee;
+   padding:0;
+   margin:0;
+}
+
+
+.warn {
+    background: red;
+    color: gold;
+    font-weight: bold;
+}
+
+
+a {
+  color: blue;
+  text-decoration: none
+}
+
+a.help {
+  color: green;
+}
+
+/*/
+.even { background: #ffeecc; } 
+.odd { background:  #ffee99; }
+/*/
+
+fieldset {
+    border: none;
+}
+
+table.email, table.dns, table.full {
+      width:100%;
+      margin-bottom:25px;
+      background:#fe9;
+}
+
+table.dns td, table.email td {
+  background:#fe9;
+}
+
+
+tr.subdomain td {
+  background: #eef;
+}
+
+tr.mx td {
+  background: #fee;
+}
+
+tr.mailrule td {
+  background: white;
+}
+
+.siteless {
+    color: #999;
+    font-style: italic;
+}
+
+td.indent {
+  padding-left: 25px;
+}
+
+#quickadd { 
+  background: #eee;
+}
+#quickadd b { 
+   display: block;
+   background: black;
+   color: white;
+}
+#quickadd ul {
+    margin: 2px;
+    list-style-type: none;
+}
+
+.message {
+    margin-top: 10px;
+    background: #eee;
+}
+
+#adminbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 3;
+  margin-bottom: 0;
+}

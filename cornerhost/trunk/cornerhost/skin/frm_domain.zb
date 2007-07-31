@@ -1,0 +1,81 @@
+
+* exec:
+    from zebra import html
+    from cornerhost.safety import safeDomain
+    name = req.get('name')
+    d = safeDomain(user, name)
+
+* if changed:
+   <p style="color:green"><b>Configuration updated.</b></p>
+
+<h2>edit domain: {:d.domain:}</h2>
+
+<!-- repoint site -->
+<form action="user.app" method="post">
+{:html.hidden("name", name):}
+{:html.hidden("action", "repoint"):}
+<fieldset>
+<h3>site settings</h3>
+* if d.is_site:
+    This is the main domain for the
+    <a href="user.app?action=edit_site&amp;name={:d.domain:}"
+       >{:d.domain:} site</a>. 
+    If you want to delete this domain, delete the site first.
+* el:
+    * if d.site:
+        This domain is currently pointed at the 
+        <a href="user.app?action=edit_site&amp;name={:d.site.domain.domain:}">{:d.site.domain.domain:} site</a>.
+    * el:
+        This domain is not currently pointed at a website.
+
+    <p>Point this domain at: 
+    {:html.select("repoint_to", [("new_site", "(its own new site)")]+[(s.domain.domain, s.domain.domain) for s in user.sites], ):}
+    <input type="submit" value="go"/>
+    </p>
+    
+</fieldset>
+</form>
+
+<hr/>
+
+
+<!-- edit site -->
+<form action="user.app" method="post">
+{:html.hidden("name", name):}
+
+<fieldset>
+<h3>mail settings</h3>
+  {:html.checkbox("processmail", d.processmail):}  Process mail for this domain
+</fieldset>
+
+<br/>
+
+
+
+<fieldset>
+<h3>DNS settings</h3>
+<p>{:html.radio("rule", d.rule=='host', "host"):} Use cornerhost nameservers to point to your account. <i>When in doubt, choose this.</i></p>
+<p>{:html.radio("rule", d.rule=='friend', "friend"):} Use external nameservers to point to your account.</p>
+<p>
+  {:html.radio("rule", d.rule=='point', "point"):} Use cornerhost nameservers to point to the following
+  {:html.select("rectype", [("a","ip address"),("cname","domain")], d.rectype):}:
+  {:html.text("location", d.location):}
+</p>
+</fieldset>
+
+<br/>
+
+<input type="submit" name="action" value="save domain"/>
+
+&nbsp;&nbsp;&nbsp;
+* if d.is_site:
+    <button type="button" style="color:#888888" 
+       onclick="alert('This is the main domain for a site. Delete the site first.')">delete domain</button>
+* ef d.subs:
+    <button type="button" style="color:#888888" 
+       onclick="alert('This domain has subdomains. Delete the subdomains first.')">delete domain</button>
+* el:
+    <input type="submit" name="action" value="delete domain"/>
+
+</form>
+

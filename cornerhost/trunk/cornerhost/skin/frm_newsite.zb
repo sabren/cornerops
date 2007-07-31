@@ -1,0 +1,11 @@
+*#
+*# add new domain/site
+*# non-platonic error page, so it includes all the other chunks.
+*#
+*# $Id: frm_newsite.zb,v 1.2 2004/11/19 06:37:34 sabren Exp $
+
+* include header;
+* include userbar;
+* include errors;
+* include add_domain;
+* include footer;

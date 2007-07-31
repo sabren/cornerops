@@ -1,0 +1,16 @@
+
+* include header;
+
+<h2>added: {:added:}</h2>
+
+<ul>
+  <li>Upload your files to <b>web/{:added:}</b></li>
+  <li>Make sure your nameservers are set to <b>ns1.sabren.com</b>
+      and <b>ns2.sabren.com</b></li>
+  <li>Use <a href="{:alias:}"><b>{:alias:}</b></a> while
+      you wait on DNS (24-48 hours for new domains,
+      1-4 hours for subdomains).</li>
+</ul>
+<br>&nbsp;<br>
+
+* include footer;

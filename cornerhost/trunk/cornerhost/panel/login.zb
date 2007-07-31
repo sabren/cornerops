@@ -1,0 +1,47 @@
+<html>
+<head>
+<title>cornerhost control panel</title>
+<style type="text/css">
+body, p, table {
+  font-family: verdana, arial, helvetica;
+  font-size: 10pt;
+}
+body {
+  background: #eeeeee;
+}
+</style>
+</head>
+<body>
+
+<br>&nbsp;<br>
+<br>&nbsp;<br>
+
+<form action="{:action:}" method="post">
+{:hidden:}
+
+<table width="400" align="center" cellspacing="0" cellpadding="5">
+
+<tr><td style="background: white" align="left"
+      ><a href="http://www.cornerhost.com/"
+          ><img border="0" src="/cornerhost/cornerhostlogo.png" width="170" height="25"
+                alt ="cornerhost" style="padding-top:5px;padding-bottom:5px"></a></td></tr>
+<tr><td style="background:#ffee99">
+  <b>{:message:}</b>
+</td></tr>
+<tr><td style="background: white">
+   <table align="center">
+      <tr><td>username:</td>
+          <td><input type="text" id="auth_username" name="auth_username"></td></tr>
+      <tr><td>password:</td>
+          <td><input type="password" name="auth_password"></td></tr>
+      <tr><td>&nbsp;</td>
+          <td align="right"><input type="submit" value="submit"></td></tr>
+   </table>
+</td></tr>
+</table>
+</form>
+<script language="JavaScript">
+  document.getElementById("auth_username").focus();
+</script>
+</body>
+</html>

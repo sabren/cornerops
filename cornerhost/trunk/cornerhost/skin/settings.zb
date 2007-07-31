@@ -1,0 +1,37 @@
+
+* exec:
+    from zebra import html
+
+
+* if changed:
+   <p style="color:green"><b>settings updated succesfully.</b></p>
+
+<h2>account settings</h2>
+
+
+<p><b>bandwidth rule</b>: Should your account ever exceed its monthly
+   bandwidth limit, you have two options:</p>
+
+<ul>
+  <li>By default, you will be charged at Rackspace's 
+      overage rate of $3.50/GB/Month. </li>
+  <li>If you prefer, you can have your sites turned off
+      for the rest of your monthly billing cycle.</li>
+</ul>
+
+<p>Your bandwidth rule is currently set to <b>{:bandrule:}</b>.</p>
+
+
+<form action="user.app" method="post">
+<p>New bandwidth rule: 
+{:html.select('bandrule', ['charge','disable'], bandrule):}
+
+<input type="submit" name="action" value="save settings"/>
+</p>
+</form>
+
+
+<p><i>(Michal's Note: You can raise your bandwidth quota for a reduced rate of
+   $2.25/GB/Month if you prepay... Send me an email to set it up)</i>
+</p>
+

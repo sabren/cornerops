@@ -1,0 +1,31 @@
+
+* exec:
+      #@TODO: getcron should almost certainly be inlined!
+      crontab = user.getBeaker().getcron(user.username)
+      if not crontab.endswith("\n"):
+         crontab += "\n"
+
+* if changed:
+   <p style="color:green"><b>Crontab updated succesfully.</b></p>
+
+<h2>cron configuration</h2>
+
+<p>Cron lets you to run commands automatically at specified
+times. Here is the syntax and an example line: </p>
+
+<pre style="color:green">
+(min) (hour) (day of month) (month) (day of week) command
+30 5 */2 * *  nice $HOME/run_every_other_day_at_5_thirty_am.py
+</pre>
+
+<p><b>Note:</b> Please avoid scheduling resource intensive scripts 
+more than once per hour.<br/>Include the word "nice" in front of 
+the command to lighten the impact on the server.</p>
+
+<form action="user.app" method="post">
+<input type="hidden" name="action" value="setcron" />
+<textarea style="width:100%" rows="10" cols="80" name="crontab">{:crontab:}</textarea>
+<br/>
+<input type="submit"  value="update"/>
+</form>
+

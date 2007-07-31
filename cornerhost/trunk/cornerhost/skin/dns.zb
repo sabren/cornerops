@@ -1,0 +1,103 @@
+
+* exec:
+     from zebra import html
+     from strongbox import BoxView
+     def by(what):
+          return lambda a,b: cmp(getattr(a,what), getattr(b,what))
+     domains = [BoxView(d) for d in user.domains]
+     domains.sort(by("domain"))
+     zones = [d for d in domains if not d.zone]
+
+<h2>your dns records</h2>
+
+
+<table class="dns" cellspacing="0" cellpadding="2" style="width:100%;">
+<tr>
+<th>domain</th><th>type</th><th>target</th>
+</tr>
+* for zones:
+     * exec:
+          subs.sort(by("name"))
+          dnsrecs.sort(lambda a,b: cmp(a.rectype,b.rectype) or cmp(a.priority,b.priority) )
+     <tr class="domain">
+          <td>
+          * if site:
+              <a href="user.app?action=edit_domain&amp;name={:name:}">{:name:}</a>
+          * el:
+              <span class="siteless"><a href="user.app?action=edit_domain&amp;name={:name:}">{:name:}</a></span>
+          </td>
+          <td>
+           {:rectype.upper():}
+          </td>
+          <td>
+          * if location:
+              {:html.deNone(location):}
+          * el:
+              (<em>{:user.server.name:}</em>)
+          </td>
+     </tr>
+     * for subs:
+          <tr class="subdomain">
+            <td class="indent">
+              * if site:
+                <a href="user.app?action=edit_domain&amp;name={:name:}">{:prefix:}</a>
+              * el:
+                <span class="siteless"><a href="user.app?action=edit_domain&amp;name={:name:}">{:prefix:}</a></span>
+            </td>            
+            <td>
+             {:rectype.upper():}
+            </td>
+            <td>
+            {:location:}
+            </td>
+          </tr>
+          * for dnsrecs:
+              <tr class="mx">
+                <td class="indent">
+                {:prefix:}
+                </td>
+                <td>
+                   {:rectype:}
+                </td>
+                <td>
+                  * if rectype=='MX':
+                    <a href="user.app?action=edit_dns_mx&amp;domain={:domain.domain:}&amp;ID={:ID:}"
+                       >{:priority:} {:value:}</a>
+                  * el:
+                    <a href="user.app?action=edit_dns_txt&amp;domain={:domain.domain:}&amp;ID={:ID:}"
+                       >{:value:}</a>
+                </td>
+              </tr>
+     * for dnsrecs:
+          <tr class="mx">
+            <td class="indent">{:domain.domain:}</td>
+            <td>{:rectype.upper():}</td>
+            <td>
+            * if rectype=='MX':
+                 <a href="user.app?action=edit_dns_mx&amp;domain={:domain.domain:}&amp;ID={:ID:}"
+                    >{:priority:} {:value:}</td>
+            * el:
+                 <a href="user.app?action=edit_dns_txt&amp;domain={:domain.domain:}&amp;ID={:ID:}"
+                    >{:value:}</td>
+            </td>
+          </tr>
+</table>
+
+
+
+
+<div>
+
+ <div>
+  <p>Your <b>nameservers</b> should be:</p>
+  <div style="margin: .5em; margin-left: 3em;">
+    <b style="color:green">ns1.sabren.com</b>&nbsp;<a
+       href="#"
+       onclick="javascript:alert('&quot;ns.sabren.com&quot; works, too.\n If you\'re using that for an existing domain,\n you don\'t need to change it.')"
+       class="action">?</a><br/>
+    <b style="color:green">ns2.sabren.com</b>
+  </div>
+  <p><b>cheap domains:</b> <a href="http://www.godaddy.com">godaddy</a></p>
+ </div>
+
+</div>

@@ -1,0 +1,11 @@
+* if error:
+    <div style="background:white; color:red">
+    <p><b>ERROR:</b>
+    * if isinstance(error, ValueError) and len(error.args)==2:
+        {:'Invalid %s: %s' % (error.args):}
+    * ef isinstance(error, TypeError) and len(error.args)==4:
+        {:'Invalid %s: %s' % (error.args[:2]):}
+    * el:
+        {:str(error).replace("exceptions.Exception:","").replace("NO:",""):}
+    </p>
+    </div>

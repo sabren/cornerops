@@ -1,0 +1,24 @@
+*# add new domain/site
+*# $Id: add_subdomain.zb,v 1.4 2006/09/03 22:07:14 sabren Exp $
+
+* exec:
+    from zebra import html
+    domains = user.domainNames()
+
+<h2>add new subdomain</h2>
+
+<form action="user.app" method="post">
+<input type="hidden" name="action" value="create_subdomain"/>
+
+* if domains:
+  <input type="text" size="10" name="subName" value="{:req.get('subName',''):}"
+         style="text-align:right"
+  />.{:html.select("domName", domains, req.get('domName')):}
+  <p>{:html.checkbox("create_site", int(req.get('create_site',True))):}
+      create site for this subdomain.</p>
+
+  <input type="submit" value="create"/>
+
+* el:
+  <p>You can't add a subdomain until you have a domain. :)</p>
+</form>

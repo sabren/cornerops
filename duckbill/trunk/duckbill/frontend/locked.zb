@@ -1,0 +1,17 @@
+
+* include dsp_head;
+
+<h1>locked accounts</h1>
+
+* for locked:
+    * head:
+        <table style="width: 300px">
+    * body:
+        <tr>
+          <td>{:brand:}</td>
+          <td><a href="index.py?action=jump&amp;jumpto={:account:}">{:account:}</a></td>
+          <td>{:balance:}</td>
+        </tr>
+    * foot:
+        </table>
+
