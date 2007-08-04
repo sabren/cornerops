@@ -70,8 +70,8 @@ tr.even td.rowtotal{ background: white; border-left: solid black 1px; }
 
 #balance {
   position: absolute;
-  left: 500px;
-  top: 120px;
+  left: 315px;
+  top: 90px;
   background:white;
   padding: 5px;
   border: solid black 1px;
