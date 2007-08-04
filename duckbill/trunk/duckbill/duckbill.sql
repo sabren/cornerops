@@ -72,7 +72,6 @@ CREATE TABLE bill_subscription (
   accountID int(11) NOT NULL default '0',
   service varchar(30) default NULL,
   username varchar(30) default NULL,
-  password varchar(30) default NULL,
   note varchar(255) default NULL,
   rate decimal(8,2) default NULL,
   opened date default NULL,
