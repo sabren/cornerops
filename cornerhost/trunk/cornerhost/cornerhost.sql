@@ -13,20 +13,20 @@ CREATE TABLE redirect (
   username varchar(32) default NULL,
   oldserver varchar(32) default NULL,
   newserver varchar(32) default NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+);
 
 --
--- Table structure for table `ref_event`
+-- Table structure for table ref_event
 --
 
 CREATE TABLE ref_event (
   event varchar(30) default NULL,
   spin int(11) default NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+);
 
 
 --
--- Table structure for table `sale_prospect`
+-- Table structure for table sale_prospect
 --
 
 CREATE TABLE sale_prospect (
@@ -53,12 +53,12 @@ CREATE TABLE sale_prospect (
   comments text,
   description text,
   payment enum('credit','paypal','check') default NULL,
-  `status` enum('new','rejected','filled','cancelled') default NULL,
+  status enum('new','rejected','filled','cancelled') default NULL,
   PRIMARY KEY  (ID)
-) ENGINE=MyISAM AUTO_INCREMENT=3143 DEFAULT CHARSET=latin1;
+);
 
 --
--- Table structure for table `sys_database`
+-- Table structure for table sys_database
 --
 
 CREATE TABLE sys_database (
@@ -67,10 +67,10 @@ CREATE TABLE sys_database (
   dbname varchar(32) NOT NULL default '',
   PRIMARY KEY  (ID),
   UNIQUE KEY dbname (dbname)
-) ENGINE=MyISAM AUTO_INCREMENT=715 DEFAULT CHARSET=latin1;
+);
 
 --
--- Table structure for table `sys_domain`
+-- Table structure for table sys_domain
 --
 
 CREATE TABLE sys_domain (
@@ -90,10 +90,10 @@ CREATE TABLE sys_domain (
   UNIQUE KEY domain_3 (domain),
   UNIQUE KEY domain_4 (domain),
   UNIQUE KEY domain_5 (domain)
-) ENGINE=MyISAM AUTO_INCREMENT=6185 DEFAULT CHARSET=latin1;
+);
 
 --
--- Table structure for table `sys_domain_mx`
+-- Table structure for table sys_domain_mx
 --
 
 CREATE TABLE sys_domain_mx (
@@ -101,12 +101,12 @@ CREATE TABLE sys_domain_mx (
   domainID int(11) NOT NULL default '0',
   rectype enum('MX','TXT') default 'MX',
   priority int(11) NOT NULL default '0',
-  `value` varchar(255) default NULL,
+  value varchar(255) default NULL,
   PRIMARY KEY  (ID)
-) ENGINE=MyISAM AUTO_INCREMENT=323 DEFAULT CHARSET=latin1;
+);
 
 --
--- Table structure for table `sys_forward`
+-- Table structure for table sys_forward
 --
 
 CREATE TABLE sys_forward (
@@ -116,10 +116,10 @@ CREATE TABLE sys_forward (
   mailto varchar(64) default NULL,
   PRIMARY KEY  (ID),
   UNIQUE KEY domainID (domainID,virtuser)
-) ENGINE=MyISAM AUTO_INCREMENT=8556 DEFAULT CHARSET=latin1;
+);
 
 --
--- Table structure for table `sys_mailbox`
+-- Table structure for table sys_mailbox
 --
 
 CREATE TABLE sys_mailbox (
@@ -127,10 +127,10 @@ CREATE TABLE sys_mailbox (
   userID int(11) NOT NULL default '0',
   mailbox varchar(32) default NULL,
   PRIMARY KEY  (ID)
-) ENGINE=MyISAM AUTO_INCREMENT=997 DEFAULT CHARSET=latin1;
+);
 
 --
--- Table structure for table `sys_plan`
+-- Table structure for table sys_plan
 --
 
 CREATE TABLE sys_plan (
@@ -142,10 +142,10 @@ CREATE TABLE sys_plan (
   dbquota int(11) default '0',
   monthlyCost int(11) default NULL,
   PRIMARY KEY  (ID)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+);
 
 --
--- Table structure for table `sys_server`
+-- Table structure for table sys_server
 --
 
 CREATE TABLE sys_server (
@@ -157,15 +157,15 @@ CREATE TABLE sys_server (
   load1 decimal(5,2) default NULL,
   load5 decimal(5,2) default NULL,
   load15 decimal(5,2) default NULL,
-  stamp timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  stamp timestamp,
   space varchar(5) default NULL,
   memory varchar(5) default NULL,
-  `status` enum('active','inactive') default 'active',
+  status enum('active','inactive') default 'active',
   PRIMARY KEY  (ID)
-) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+);
 
 --
--- Table structure for table `sys_site`
+-- Table structure for table sys_site
 --
 
 CREATE TABLE sys_site (
@@ -181,24 +181,24 @@ CREATE TABLE sys_site (
   suExec tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (ID),
   UNIQUE KEY domainID (domainID)
-) ENGINE=MyISAM AUTO_INCREMENT=5630 DEFAULT CHARSET=latin1;
+);
 
 --
--- Table structure for table `sys_trail`
+-- Table structure for table sys_trail
 --
 
 CREATE TABLE sys_trail (
   ID int(11) NOT NULL auto_increment,
-  `user` varchar(30) default NULL,
+  user varchar(30) default NULL,
   what varchar(255) default NULL,
   tstamp datetime default NULL,
   server varchar(30) default NULL,
   note varchar(255) default NULL,
   PRIMARY KEY  (ID)
-) ENGINE=MyISAM AUTO_INCREMENT=2177 DEFAULT CHARSET=latin1;
+);
 
 --
--- Table structure for table `sys_user`
+-- Table structure for table sys_user
 --
 
 CREATE TABLE sys_user (
@@ -211,7 +211,7 @@ CREATE TABLE sys_user (
   diskquota int(11) default NULL,
   diskextra int(11) NOT NULL default '0',
   diskusing bigint(20) NOT NULL default '0',
-  `status` enum('active','locked','closed') default 'active',
+  status enum('active','locked','closed') default 'active',
   is_active tinyint(1) NOT NULL default '1',
   bandquota bigint(20) default NULL,
   bandextra bigint(20) default '0',
@@ -221,10 +221,10 @@ CREATE TABLE sys_user (
   dbextra int(11) NOT NULL default '0',
   PRIMARY KEY  (ID),
   UNIQUE KEY username (username)
-) ENGINE=MyISAM AUTO_INCREMENT=1398 DEFAULT CHARSET=latin1;
+);
 
 --
--- Table structure for table `sys_user_traffic`
+-- Table structure for table sys_user_traffic
 --
 
 CREATE TABLE sys_user_traffic (
@@ -234,5 +234,5 @@ CREATE TABLE sys_user_traffic (
   traffic bigint(20) default NULL,
   PRIMARY KEY  (ID),
   UNIQUE KEY userID (userID,whichday)
-) ENGINE=MyISAM AUTO_INCREMENT=651474 DEFAULT CHARSET=latin1;
+);
 
