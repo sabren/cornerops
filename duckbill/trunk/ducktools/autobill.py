@@ -16,7 +16,9 @@ try:
     #@TODO: clean up this hack (open source sanitation)
     from taskconfig import FROM
 except:
-    FROM = "somebody@example.com"
+    print "create a taskconfig.py with one line:"
+    print "FROM='you@yourdomain.com'"
+    sys.exit()
 
 
 TWO_DAYS_AGO=Date("today")-2
