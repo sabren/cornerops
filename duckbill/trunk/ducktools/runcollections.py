@@ -18,9 +18,16 @@ uclerk = config.makeClerk()
 
 try:
     from graced import GRACED, gracedUntil
-except:
-    GRACED = []
-    gracedUntil = []
+except Exception, e:
+    print e
+    print 
+    print "create a graced.py that defines GRACED and gracedUntil"
+    print "it should look like this:"
+    print
+    print "from pytypes import Date"
+    print "graced = ['list','of','usernames']"
+    print "gracedUntil = [('username',Date('20yy/mm/dd'))]"
+    sys.exit()
 
 for who, until in gracedUntil:
     if Date("today") <= until:
@@ -46,6 +53,8 @@ if __name__=="__main__":
 
     for acc in r.dueAccounts():
         if acc.account in GRACED:
+            continue
+        if acc.brand.lower().startswith('dcd'):
             continue
         
         # still here, so:
