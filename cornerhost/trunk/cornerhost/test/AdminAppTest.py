@@ -24,10 +24,12 @@ class AdminAppTest(unittest.TestCase):
             'plan':'script',
             'diskextra':'10',
             'bandextra':'20',
+            'boxextra':'0',
+            'dbextra':'0',
             '_clerk': self.clerk,
             '_sess': self.sess,
         }
-        self.assertRaises(Redirect, cmd.invoke, **req)
+        self.assertRaises(Redirect, cmd.invoke,  **req)
         assert fred.status == req['status']
         assert fred.plan.name == req['plan']
         assert fred.diskextra == int(req['diskextra'])

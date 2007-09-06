@@ -11,14 +11,9 @@ class UserClerkTest(unittest.TestCase):
         self.fred = personas.makeFred(clerk)
         self.uclerk = UserClerk(self.fred, clerk)
 
-    def test_safeDomain(self):
-        raise "skip"
-    
-    def test_safeDNSRec(self):
-        raise "skip"
-    
-    def test_safeSite(self):
-        raise "skip"
+    #@TODO: def test_safeDomain(self):
+    #@TODO: def test_safeDNSRec(self):
+    #@TODO: def test_safeSite(self):
 
     def test_safeEmailRule_new(self):
         rule = self.uclerk.safeEmailRule(None)

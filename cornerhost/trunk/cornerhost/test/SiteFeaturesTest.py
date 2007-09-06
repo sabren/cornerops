@@ -8,10 +8,16 @@ class SiteFeaturesTest(unittest.TestCase):
     
     def test_DeleteSiteCommand(self):
         uclerk = personas.fredClerk()
+
+        self.assertEquals(1, len(uclerk.clerk.match(Site)))
+
         cmd = site.DeleteSiteCommand(uclerk)
-        assert uclerk.clerk.match(Site)
         cmd.invoke(_clerk=uclerk.clerk, _user=uclerk.user, name='fred.com')
-        assert not uclerk.clerk.match(Site)
+
+        sites = uclerk.clerk.match(Site)
+        #import pdb; pdb.set_trace()
+        self.assertEquals([], sites)
+        self.assertEquals(0, len(uclerk.clerk.match(Site)))
 
     def test_SaveSiteCommand(self):
         uclerk = personas.fredClerk()

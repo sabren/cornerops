@@ -18,17 +18,8 @@ class SiteTest(unittest.TestCase):
         self.clerk.store(s)
         self.clerk.store(d)        
         s = self.clerk.fetch(Site, ID=1)
-
-        # @TODO: remove this once clerk injects live data
-        for a in s.aliases:            
-            if a.domain: pass
         
-        assert a in s.aliases
-
-    def test_main_domain_not_in_aliases(self):
-        raise "skip"
-        # @TODO: assert d not in s.aliases
-        # It passes now but I don't know why!!
+        assert [a] == s.aliases
         
 
 if __name__=="__main__":

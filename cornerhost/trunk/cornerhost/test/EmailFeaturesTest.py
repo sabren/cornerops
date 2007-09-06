@@ -74,7 +74,6 @@ class EmailFeaturesTest(unittest.TestCase):
         cmd = email.DeleteRuleCommand(self.uc)
         cmd.invoke(self.user, self.clerk,
                    oldDom='fred.com', ID=self.dom.rules[0].ID)
-        raise "skip"
 
     def test_CreateBoxCommand(self):
         fred = self.uc.user
