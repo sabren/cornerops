@@ -1,7 +1,7 @@
 
 * exec:
     assert req.get("name"), "expected a name parameter"
-    name = req["name"]
+    name = req["name"].lower()
     hadSite = int(req.get("hadSite", 0))
 
 <h2>domain created!</h2>
