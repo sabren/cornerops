@@ -2,7 +2,7 @@
 Hi {:fname:},
 
 Thanks for the order! Your account is ready to go.
-Here is the information you'll need to access it:
+Here's the information you'll need to get started:
 
 #[ login ]##################################################
 
@@ -97,7 +97,7 @@ mail software, using the following information:
           username: your username
           password: your password
   POP3/IMAP server: {:server.name:}.sabren.com
-       SMTP server: [provided by your isp]
+       SMTP server: [provided by your ISP]
 
 Some ISPs won't let you use their SMTP server to send
 mail for your domain. Others won't let you connect to
@@ -167,7 +167,7 @@ called "my outgoing mail server requires authentication".
 #[ inner circle users group ]###############################
 
 You're invited to join the cornerhost inner circle.
-This is a private mailling list where cornerhost
+This is a private mailing list where cornerhost
 customers can ask questions, learn from each other,
 show off their sites, and just have fun. It's also
 the best place to voice your ideas about improving
@@ -190,13 +190,17 @@ This is a great place to start if you need help.
 
 #[ payment ]################################################
 
-You ordered the {:plan.name:} account, which costs ${:plan.monthlyCost:} a month 
-or ${:plan.monthlyCost * 10:} a year. You can pay for your account online at:
+For your records, you ordered the {:plan.name:} account,
+which costs ${:plan.monthlyCost:} a month or ${:plan.monthlyCost * 10:} a year.
 
-    http://www.cornerhost.com/payment/
+Your first 30 days are included in your free trial.
+After that, if you would like to keep the account,
+you will receive a statement with instructions
+explaining how to pay your bill.
 
-That should be about it. Let me know if you have any
-problems or questions and thanks again for signing up!
+
+Well, that should be about it. Let me know if you have any
+questions, and thanks again for signing up!
 
 Sincerely,
 
