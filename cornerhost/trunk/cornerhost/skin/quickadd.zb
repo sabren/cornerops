@@ -1,8 +1,0 @@
- <div id="quickadd">
-  <b>quick add</b>
-  <ul>
-   <li><a href="user.app?action=add_domain">domain</a></li>
-   <li><a href="user.app?action=add_subdomain">subdomain</a></li>
-   <li><a href="user.app?action=edit_dnsrec">custom dns record</a></li>
-  </ul>
- </div>

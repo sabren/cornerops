@@ -1,7 +1,0 @@
-
-<form action="user.app" method="post">
-
-<input type="submit" name="action" value="create mailbox"/>
-
-</form>
-
