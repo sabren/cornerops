@@ -1,0 +1,81 @@
+<!--! cornerops site list -->
+<?python
+from handy import readable
+from strongbox import BoxView
+from zebra import html
+
+sites=[BoxView(s) for s in user.sites] #@TODO: ick :(
+sites.sort(lambda a,b: cmp(a.domain.domain, b.domain.domain))
+
+?>
+<html py:strip="True"
+      xmlns:py="http://genshi.edgewall.org/" 
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+  
+<div py:match="content">
+
+
+  <xi:include py:if="admin" href="admin.gen"/>
+
+
+  <h2>usage stats</h2>
+  
+  <div style="float:left; padding:0; margin:0;">
+    <div class="miniform" style="width:265px; padding:0px; font-weight:bold">
+      <span style="float:right">
+	[<a href="#"
+	onclick="javascript:alert('This chart shows your bandwidth usage for the past thirty days compared to your quota. For more detail, consult the logfile reports for each site.')" class="help">?</a>]</span>
+	bandwidth
+    </div>
+    <img height="100" alt="bandwidth chart"
+	 style="padding:0; margin:0;" width="265"
+	 src="bandwidthchart.app?username=${user.username}"/>
+  </div>
+  
+  <div style="float:right; background: #eee; height:115px">
+    <div class="miniform" style="font-weight:bold">
+      <span style="float:right">
+	[<a href="#"
+	onclick="javascript:alert('The diskspace report is updated once a night and includes space taken up by your mail, websites, logfiles, and other files. The best way to clear off space is to delete or zip up old logfiles.')" class="help">?</a>]</span>
+	usage
+    </div>
+    using ${readable(user.diskusing)} of ${readable(user.diskquota)}
+  </div>
+  
+  <div style="clear:both; padding-top:20px;">
+    
+    <h2>your sites</h2>
+    
+    <table class="full" cellspacing="4" cellpadding="0">
+      <py:for each="s in sites">
+	<tr>
+	  <td>
+	    <a href="${s.fallbackURL}">${s.domain.domain}</a>
+	  </td>
+	  <td style="text-align:right">
+	    [<a href="user.app?action=edit_site&amp;name=${s.domain.domain}">config</a>]
+	    [<a href="analog/${user.username}/${s.domain.domain}/analog.html">logs</a>]
+	  </td>
+	</tr>
+	<py:with vars="aliasNames=[a.domain for a in aliases if a.domain!=s.domain.domain]">
+	  <py:if test="aliasNames">
+	    <tr>
+	      <td colspan="2" style="padding-left:10px; font-size:smaller">
+		alias: ${', '.join(aliasNames)}
+	      </td>
+	    </tr>
+	  </py:if>
+	</py:with>
+      </py:for>
+    </table>
+    
+    <p style="font-size:smaller;">
+      The site links go to cornerhost-specific fallback URLs.<br/>
+      They will work even if your DNS servers are not configured.
+    </p>
+  </div>
+</div>
+
+<xi:include href="master.gen"/>
+
+</html>

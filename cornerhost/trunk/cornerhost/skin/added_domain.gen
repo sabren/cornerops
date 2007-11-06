@@ -1,0 +1,52 @@
+<?python
+assert req.get("name"), "expected a name parameter"
+name = req["name"].lower()
+hadSite = int(req.get("hadSite", 0))
+?>
+<html py:strip="True"
+      xmlns:py="http://genshi.edgewall.org/" 
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+  
+<div py:match="content">
+
+<h2>domain created!</h2>
+
+<p>Your domain has been added to the database. The cornerhost
+<strong>DNS servers</strong> will begin serving it <strong>within
+the hour</strong>.</p>
+
+<p>However, if you have only <strong>recently set your
+nameservers</strong> to ns1.sabren.com and ns2.sabren.com then it will
+still take <strong>24 to 48 hours</strong> from the time you set the
+nameservers before the rest of the internet knows where to look.</p>
+
+<py:if test="hadSite">
+    <p>The <strong>web server</strong> will begin serving
+    the site <strong>within 5 minutes</strong>. While you
+    are waiting for the DNS change to kick in, you can use
+    the following url:</p>
+    
+    <blockquote>
+    <a href="http://${name}.${user.server.shortname}.sabren.com/"
+            >http://${name}.${user.server.shortname}.sabren.com/</a>
+    </blockquote>
+</py:if>
+
+<p></p>
+
+<h2>See also:</h2>
+
+<p><a href="user.app?action=edit_domain&amp;name=${name}">Advanced 
+<strong>dns</strong> options for this <strong>domain</strong>.</a></p>
+
+<py:if test="hadSite">
+  <p><a href="user.app?action=edit_site&amp;name=${name}">Advanced
+  <strong>web server</strong> options for this
+  <strong>site</strong>.</a></p>
+</py:if>
+
+</div>
+
+<xi:include href="master.gen"/>
+
+</html>

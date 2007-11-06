@@ -1,0 +1,75 @@
+<?python
+  from zebra import html
+  from cornerhost import DNSRec, Domain
+  from cornerhost.safety import safeDNSRec, safeDomain
+  
+  # @TODO: this is duplicated in _txt and _mx
+  domains=user.domainNames(onlyZones=False)
+  if req.get("domain") and req.get("ID"):
+      dom = safeDomain(user, req["domain"])
+      dns = safeDNSRec(dom, int(req["ID"]))
+  else:
+      dns = DNSRec(domain=Domain(domain='dummy.domain'))
+?>
+<html py:strip="True"
+      xmlns:py="http://genshi.edgewall.org/" 
+      xmlns:xi="http://www.w3.org/2001/XInclude"> 
+
+<div py:match="content">
+
+  <py:if test="dns.ID">
+    <h2>edit custom MX record</h2>
+  </py:if>
+  <py:if test="not dns.ID">
+    <h2>add custom MX record</h2>
+  </py:if>
+  
+  <div style="width: 50%; padding-bottom:50px; float: left">
+    <form action="user.app" method="post">
+      <input type="hidden" name="action" value="save_dns_mx"/>
+      <input type="hidden" name="rectype" value="MX"/>
+      
+      <py:if test="dns.ID">
+	${Markup(html.hidden("ID", dns.ID))}
+      </py:if>
+      
+      <table>
+	<tr>
+	  <td>domain:</td>
+	  <td>${Markup(html.select("domain", domains, dns.domain.domain))}</td>
+	</tr>
+	<tr>
+	  <td>priority:</td>
+	  <td>${Markup(html.text("priority", dns.priority, 'id="priority" size="5"'))}</td>
+	</tr>
+	<tr>
+	  <td>value:</td>
+	  <td>${Markup(html.text("value", dns.value.replace('\"','&quot;')))}</td>
+	</tr>
+      </table>
+      <br/>
+      <input type="submit" value="save record"/>
+    </form>
+    
+    <py:if test="dns.ID">
+      <form action="user.app" method="post">
+	<br/>
+	<input type="hidden" name="action" value="delete_record"/>
+	${Markup(html.hidden("ID", dns.ID))}
+	${Markup(html.hidden("domain_in", dns.domain.domain))}
+	<input type="submit" value="delete record"/>
+      </form>
+    </py:if>
+  </div>
+  
+  <p>
+    MX records let you specify external mail servers
+    for your domain, and must point to a hostname - not
+    an IP address. Only create an MX record if you
+    have your own mail server.
+  </p>
+</div>
+
+<xi:include href="master.gen"/>
+
+</html>

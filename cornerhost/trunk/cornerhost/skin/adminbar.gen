@@ -1,0 +1,19 @@
+<!-- admin bar -->
+<div id="adminbar">
+<form  action="admin.app" method="get">
+ <table style="background: #9cf; width:100%">
+  <tr>
+   <td>
+    <a accesskey="s" href="admin.app?action=servers">[s]ervers</a> | 
+    <a accesskey="p" href="admin.app?action=signups">signu[p]s</a> |
+    <a accesskey="r" href="admin.app?action=traffic">t[r]affic</a> |
+   </td>
+   <td style="text-align:right">
+    <input type="hidden" name="action" value="jump"/>
+    [j]ump: <input accesskey="j" type="text" name="jumpto" value="$jumpto"/>
+    <input type="submit" value="go"/>
+   </td>
+  </tr>
+ </table>
+</form>
+</div>

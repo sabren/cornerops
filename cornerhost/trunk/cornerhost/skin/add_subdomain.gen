@@ -1,0 +1,36 @@
+<?python
+# add new domain/site
+# $Id: add_subdomain.zb,v 1.4 2006/09/03 22:07:14 sabren Exp $
+
+import html
+domains = user.domainNames()
+?>
+<html py:strip="True"
+      xmlns:py="http://genshi.edgewall.org/" 
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+  
+<div py:match="content">
+
+  <h2>add new subdomain</h2>
+
+  <form action="user.app" method="post">
+    <input type="hidden" name="action" value="create_subdomain"/>
+    
+    <py:if test="domains">
+      <input type="text" size="10" name="subName" value="${req.get('subName','')}"
+	     style="text-align:right"
+	     />.${Markup(html.select("domName", domains, req.get('domName')))}
+      <p>${Markup(html.checkbox("create_site", int(req.get('create_site',True))))}
+      create site for this subdomain.</p>
+      
+      <input type="submit" value="create"/>
+    </py:if>
+    <py:if test="not domains">
+      <p>You can't add a subdomain until you have a domain. :)</p>
+    </py:if>
+  </form>
+</div>
+
+<xi:include href="master.gen"/>
+
+</html>

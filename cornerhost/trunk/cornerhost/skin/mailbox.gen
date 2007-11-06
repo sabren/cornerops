@@ -1,0 +1,59 @@
+<?python
+  from cornerhost.safety import safeMailbox
+  
+  mailbox = req.get("mailbox")
+  assert mailbox, "mailbox parameter is required"
+  
+  box = safeMailbox(user, mailbox)
+  
+  #@TODO: replace this with "FLASH" concept from rails
+  #@TODO: have this box_password thing defined somewhere central
+  # maybe there could be a list of 'slots' for the application?
+  # basically, make the sess strongly typed rather than just a
+  # giant bag... (is that wise?)
+  #
+  # or better yet, it's just a generic "flash" string, which
+  # the form shows, and the flash/error screen is just generic
+  #
+  # This is vitally important because otherwise, SESS is being
+  # modified by the view!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  if sess.has_key("box_password"):
+      box_password = sess["box_password"]
+      del sess["box_password"]
+  else:
+      box_password = None
+?>
+<html py:strip="True"
+      xmlns:py="http://genshi.edgewall.org/" 
+      xmlns:xi="http://www.w3.org/2001/XInclude"> 
+<div py:match="content">
+
+<py:if test="changed">
+  <p style="color:green"><b>Configuration updated!</b></p>
+</py:if>
+
+<h2>changing password for ${box.mailbox}</h2>
+
+<py:if test="box_password">
+  <p style="color:green">The password for this account
+  has been set to ${box_password}</p>
+  <p>If you like, you can change the password below.</p>
+</py:if>
+
+<form action="user.app" method="POST">
+  
+  <p>enter new password:<br/>
+  <input type="password" name="pass1"/></p>
+  
+  <p>confirm password:<br/>
+  <input type="password" name="pass2"/></p>
+  
+  <p><input type="hidden" name="mailbox" value="${box.mailbox}"/>
+  <input type="hidden" name="action" value="set box password"/>
+  <input type="submit" value="set mailbox password"/>
+  </p>
+
+</form>
+</div>
+<xi:include href="master.gen"/>
+</html>

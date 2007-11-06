@@ -1,0 +1,34 @@
+<?python
+# add new domain/site
+# $Id: add_domain.zb,v 1.8 2007/03/29 23:38:58 sabren Exp $
+
+import html
+
+?>
+<html py:strip="True"
+      xmlns:py="http://genshi.edgewall.org/" 
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+
+<div py:match="content">
+  <h2>add new domain</h2>
+  
+  <form action="user.app" method="post">
+    <input type="hidden" name="action" value="create_domain"/>
+    domain: <input type="text" size="20" name="domName"
+    value="${req.get('domName','')}"/>
+    <br/>
+    <span style="font-size:smaller">(ex: domain.com)</span>
+    <p>Make sure you set your nameservers to
+    <b>ns1.sabren.com</b> and <b>ns2.sabren.com</b>.<br/>
+    You can do this wherever you bought your domain.
+    </p>
+    
+    <p>${Markup(html.checkbox('create_site', int(req.get('create_site',1))))}
+    create site for this domain.</p>
+    <input type="submit" value="create"/>
+  </form>
+</div>
+
+<xi:include href="master.gen"/>
+
+</html>

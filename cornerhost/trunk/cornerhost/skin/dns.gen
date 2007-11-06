@@ -1,0 +1,119 @@
+ <?python
+  from strongbox import BoxView
+  def by(what):
+      return lambda a,b: cmp(getattr(a,what), getattr(b,what))
+  domains = [BoxView(d) for d in user.domains]
+  domains.sort(by("domain"))
+  zones = [d for d in domains if not d.zone]
+?>
+
+<html py:strip="True"
+      xmlns:py="http://genshi.edgewall.org/" 
+      xmlns:xi="http://www.w3.org/2001/XInclude"> 
+<div py:match="content">
+
+<h2>your dns records</h2>
+  
+<table class="dns" cellspacing="0" cellpadding="2" style="width:100%;">
+  <tr><th>domain</th><th>type</th><th>target</th></tr>
+  
+  <py:for each="z in zones">
+    <?python
+      z.subs.sort(by("name"))
+      z.dnsrecs.sort(lambda a,b: cmp(a.rectype,b.rectype) or cmp(a.priority,b.priority) )
+    ?>
+    <tr class="domain">
+      <td>
+	<py:if test="bool(z.site)">
+	  <a href="user.app?action=edit_domain&amp;name=${z.name}">${z.name}</a>
+	</py:if>
+	<py:if test="not bool(z.site)">
+	  <span class="siteless"><a href="user.app?action=edit_domain&amp;name=${z.name}">${z.name}</a></span>
+	</py:if>
+	
+      </td>
+      <td>
+	${z.rectype.upper()}
+      </td>
+      <td>
+	<py:if test="z.location">${z.location}</py:if>
+	<py:if test="not z.location">(<em>${user.server.name}</em>)</py:if>
+      </td>
+    </tr>
+    
+    <py:for each="sub in z.subs">
+      <tr class="subdomain">
+	<td class="indent">
+	  <py:if test="sub.site">
+	    <a href="user.app?action=edit_domain&amp;name=${sub.name}">${sub.prefix}</a>
+	  </py:if>
+	  <py:if test="not sub.site">
+	    <span class="siteless"><a href="user.app?action=edit_domain&amp;name=${z.name}">${sub.prefix}</a></span>
+	  </py:if>
+	</td>            
+	<td>
+	  ${sub.rectype.upper()}
+	</td>
+	<td>
+	  ${sub.location}
+	</td>
+      </tr>
+      <py:for each="rec in sub.dnsrecs">
+	<tr class="mx">
+	  <td class="indent">
+	    ${sub.prefix}
+	  </td>
+	  <td>
+	    ${rec.rectype}
+	  </td>
+	  <td>
+	    <py:if test="rectype=='MX'">
+	      <a href="user.app?action=edit_dns_mx&amp;domain=${sub.domain}&amp;ID=${rec.ID}"
+		 >${rec.priority} ${rec.value}</a>
+	    </py:if>
+	    <a href="user.app?action=edit_dns_txt&amp;domain=${sub.domain}&amp;ID=${rec.ID}"
+	       >${rec.value}</a>
+	  </td>
+	</tr>
+      </py:for>
+    </py:for>
+
+    <py:for each="rec in z.dnsrecs">
+      <tr class="mx">
+	<td class="indent">${z.domain}</td>
+	<td>${rec.rectype.upper()}</td>
+	<td>
+	  <py:if test="rec.rectype.upper()=='MX'">
+	    <a href="user.app?action=edit_dns_mx&amp;domain=${z.domain}&amp;ID=${rec.ID}"
+	       >${rec.priority} ${rec.value}</a>
+	  </py:if>
+	  <py:if test="rec.rectype.upper()=='TXT'">
+	    <a href="user.app?action=edit_dns_txt&amp;domain=${z.domain}&amp;ID=${rec.ID}"
+	       >${rec.value}</a>
+	  </py:if>
+	</td>
+      </tr>
+    </py:for>
+  </py:for>
+</table>
+
+
+<div>
+  <div>
+    <p>Your <b>nameservers</b> should be:</p>
+    <div style="margin: .5em; margin-left: 3em;">
+      <b style="color:green">ns1.sabren.com</b> <a
+      href="#"
+      onclick="javascript:alert('&quot;ns.sabren.com&quot; works, too.\n If you\'re using that for an existing domain,\n you don\'t need to change it.')"
+      class="action">?</a><br/>
+      <b style="color:green">ns2.sabren.com</b>
+    </div>
+    <p><b>cheap domains:</b> <a href="http://www.godaddy.com">godaddy</a></p>
+  </div>
+</div>
+
+</div>
+
+<xi:include href="master.gen"/>
+
+</html>

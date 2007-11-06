@@ -1,0 +1,43 @@
+<?python
+import re
+dbname = req.get("dbname")
+assert dbname, "dbname parameter is required"
+assert dbname.startswith(user.username + '_'), "not your database"
+assert re.match("^(\w|_)+$", dbname), "invalid database name"
+?>
+<html py:strip="True"
+      xmlns:py="http://genshi.edgewall.org/" 
+      xmlns:xi="http://www.w3.org/2001/XInclude"> 
+<div py:match="content">
+
+<h2>confirm delete database</h2>
+
+
+<p><strong style="color:red">WARNING:</strong>
+  <strong>You are about to delete the database</strong>
+  <strong style="color:red">${dbname}</strong>.<br/>
+  <em>This will permanently discard all data in the database.</em>
+</p>
+
+
+<p style="padding-top: 25px"><strong>Really delete this database?</strong></p>
+
+<div style="width:30%; float: left">
+  <form action="user.app" method="POST">
+    <input type="hidden" name="action" value="really_delete_db"/>
+    <input type="hidden" name="dbname" value="${dbname}"/>
+    <input type="submit" value="delete database"/>
+  </form>
+</div>
+
+<div style="width:30%; float: left">
+  <form action="user.app" method="GET">
+    <input type="hidden" name="action" value="list_databases"/>
+    <input type="submit" value="cancel"/>
+  </form>
+</div>
+
+<br clear="all"/>
+</div>
+<xi:include href="master.gen"/>
+</html>

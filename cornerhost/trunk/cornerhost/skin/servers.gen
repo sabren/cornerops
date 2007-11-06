@@ -1,0 +1,48 @@
+<?python
+from genshi.builder import tag
+
+def warnIfOver(max, n):
+    if n >= max:
+        return tag.td(n, class_="warn")
+    else:
+        return tag.td(n)
+
+?>
+<html py:strip="True"
+      xmlns:py="http://genshi.edgewall.org/" 
+      xmlns:xi="http://www.w3.org/2001/XInclude"> 
+<div py:match="content">
+
+<h2>server status</h2>
+
+<table width="600" border="1">
+ <tr>
+  <th>box</th>
+  <th>age</th>
+  <th>01</th>
+  <th>05</th>
+  <th>15</th>
+  <th>disk</th>
+  <th>mem</th>
+  <th>uptime</th>
+  <th>-</th>
+ </tr>
+ <py:for each="s in servers">
+  <tr>
+   <td>${s.name}</td>
+   ${warnIfOver(2, s.age)}
+   ${warnIfOver(1, s.load1)}
+   ${warnIfOver(1, s.load5)}
+   ${warnIfOver(1, s.load15)}
+   <td>${s.space}</td>
+   <td>${s.memory}</td>
+   <td>${s.uptime}</td>
+   <td>[<a href="admin.app?server=${s.name}&amp;action=genhttpconf">genhttpconf</a>]</td>
+  </tr>
+ </py:for>
+</table>
+
+</div>
+
+<xi:include href="master.gen"/>
+</html>

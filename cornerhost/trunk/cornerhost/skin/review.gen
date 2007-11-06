@@ -1,0 +1,37 @@
+<?python
+  from zebra import html
+?>
+<html py:strip="True"
+      xmlns:py="http://genshi.edgewall.org/" 
+      xmlns:xi="http://www.w3.org/2001/XInclude"> 
+<div py:match="content">
+
+<p>process signup for <strong>${signup.fname} ${signup.lname}</strong></p>
+
+<hr/>
+
+<form action="admin.app" method="post">
+  ${Markup(html.hidden("signupID", signup.ID))}
+  <table>
+    <tr>
+      <td>username:</td> 
+      <td>${Markup(html.text("account", signup.username))}</td>
+    </tr>
+    <tr>
+      <td>plan:</td>
+      <td>${Markup(html.text("plan", signup.plan))}</td>
+    </tr>
+    <tr>
+      <td>server:</td>
+      <td>${Markup(html.text("server", "titanium"))}
+    </td></tr>
+    <tr>
+      <td>cycLen:</td>
+      <td>${Markup(html.text("cycLen", signup.cycLen))}
+    </td></tr>
+  </table>
+  <input type="submit" name="action" value="make user"/>
+</form>
+</div>
+<xi:include href="master.gen"/>
+</html>

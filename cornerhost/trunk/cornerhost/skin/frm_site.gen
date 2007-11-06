@@ -1,0 +1,85 @@
+<?python
+from zebra import html
+from cornerhost.safety import safeSiteByName
+domName = req.get("name")
+assert domName, "name parameter is required"
+site = safeSiteByName(user, domName)
+assert site, "there is no site associated with %s" % domName
+?>
+<html py:strip="True"
+      xmlns:py="http://genshi.edgewall.org/" 
+      xmlns:xi="http://www.w3.org/2001/XInclude"> 
+<div py:match="content">
+
+<h2>edit site: ${domName}</h2>
+
+<py:if test="changed">
+  <p style="color:green"><b>Update succesful.</b></p>
+</py:if>
+
+<form action="user.app" method="post">
+  ${Markup(html.hidden("name", site.domain.domain))}
+
+  <table>
+    <tr>
+      <td>${Markup(html.checkbox("haserrs", site.haserrs))} enable error logs</td>
+    </tr>
+    <tr><td>
+      ${Markup(html.checkbox("suExec", site.suExec))} enable suEXEC.
+      This makes cgi scripts run under your user account, rather
+      than apache's. You will need to run <code>chmod g-w</code>
+      on both the scripts and the directories they're in. See the
+      <a href="http://httpd.apache.org/docs-2.0/suexec.html#model">suEXEC security model</a> for details.
+    </td></tr>
+  </table>
+  
+  <p>By default, apache will look for this site in
+  <code>${site.default_docroot}</code>.</p>
+  
+  <p><b>custom document root:</b><br/>
+  ${site.docroot_prefix}/${Markup(html.text("docroot", site.docroot, 'size="50"'))}</p>
+
+  <table>
+    <py:if test="admin">
+      <tr><td colspan="2">extra<br/>
+      ${Markup(html.textarea("extra", site.extra,  'rows="10" cols="70" ID="extra"' ))}
+      </td></tr>
+    </py:if>
+    <py:if test="site.extra and not admin">
+      <tr><td>extra apache directives:<br/>
+      <pre>${site.extra}</pre>
+      </td></tr>
+    </py:if>
+  </table>
+
+  <input type="submit" name="action" value="save site"/>
+  
+  <input type="submit" name="action" value="delete site" style="margin-left: 20px;"/>
+
+
+  <py:if test="admin">
+    <button style="margin-left: 20px;" type="button" onclick="addDAV()">Add webDAV</button>
+    <script type="text/javascript">
+      //<![CDATA[
+      function addDAV() {
+          document.getElementById("extra").value +=
+             '\nDavLockDB /tmp/dav_${user.username}\n' 
+           + '<Location />\n'
+           + '  Dav On\n'
+           + '  <LimitExcept GET POST HEAD>\n'
+           + '    AuthType Basic\n'
+           + '    AuthName "DAV"\n'
+           + '    AuthUserFile /web/script/${user.username}/${domName}/.htpasswd\n'
+           + '    AuthGroupFile /dev/null\n'
+           + '    Require valid-user\n'
+           + '  </LimitExcept>\n'
+           + '</Location>\n';
+      }
+      //]]>
+    </script>
+  </py:if>
+</form>
+
+</div>
+<xi:include href="master.gen"/>
+</html>

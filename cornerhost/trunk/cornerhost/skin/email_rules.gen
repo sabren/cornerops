@@ -1,0 +1,71 @@
+<?python
+
+from genshi.builder import tag
+
+hasDomains = [d for d in user.domains if not d.domain.endswith('.sabren.com')]
+
+def nicerule(mailto):
+    if mailto=="~":
+        return user.username
+    elif mailto=="error:nouser":
+        return tag.em('(bounce)')
+    return mailto 
+
+from strongbox import BoxView
+domains = [BoxView(d) for d in user.domains]
+domains.sort(lambda a,b: cmp(a.domain, b.domain))
+
+?>
+<html py:strip="True"
+      xmlns:py="http://genshi.edgewall.org/" 
+      xmlns:xi="http://www.w3.org/2001/XInclude"> 
+<div py:match="content">
+
+<py:if test="changed">
+    <p style="color:green"><b>Configuration updated!</b></p>
+</py:if>
+
+<h2>email rule editor</h2>
+
+<py:if test="hasDomains">
+  <p style="margin-top:0px;">
+     These rules tell the server how to
+     process your mail. Each domain has one "catchall" rule, plus
+     any number of rules for specific addresses. Click on a rule to
+     edit it, or click "add rule" to create a new rule for a domain.
+  </p>
+</py:if>
+<py:if test="not hasDomains">
+    <p>You do not yet have any domains associated with
+       your account. If you add a domain later, you will
+       be able to manage email addresses for it here.</p>
+</py:if>
+
+<table class="email" border="0" cellspacing="0" cellpadding="2">
+<py:for each="d in domains">
+  <py:if test="(d.processmail) and (not d.domain.endswith('.sabren.com'))">
+    <tr>
+      <td style="background:#fe9"><b>@${d.domain}</b></td>
+      <td width="25%" style="background:#fe9" align="right">
+        [<a href="user.app?action=add_rule&amp;domName=${d.domain}">add rule</a>]
+      </td>
+    </tr>
+    <tr class="mailrule"><td colspan="2" class="indent"><a 
+        href="user.app?action=edit_catchall&amp;domName=${d.domain}"
+               ><em>(catchall)</em> : ${nicerule(d.mailto)}</a></td>
+    </tr>
+    <?python
+        d.rules.sort(lambda a,b: cmp(a.virtuser, b.virtuser))
+    ?>
+    <py:for each="r in d.rules">
+      <tr class="mailrule"><td colspan="2" class="indent">
+        <a href="user.app?action=edit_rule&amp;virtuser=${r.virtuser}&amp;domName=${d.domain}">${r.virtuser} : ${nicerule(r.mailto)}</a></td>
+      </tr>
+    </py:for>
+  </py:if>
+</py:for>        
+</table>
+
+</div>
+<xi:include href="master.gen"/>
+</html>

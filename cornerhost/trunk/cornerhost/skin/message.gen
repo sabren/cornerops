@@ -1,0 +1,11 @@
+<html py:strip="True"
+      xmlns:py="http://genshi.edgewall.org/" 
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+<div py:match="content">
+  <div class="message">
+    ${message}
+  </div>
+</div>  
+<xi:include href="master.gen"/>
+</html>
+

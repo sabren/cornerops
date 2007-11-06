@@ -1,0 +1,73 @@
+<?python
+  from zebra import html
+  from cornerhost import DNSRec, Domain
+  from cornerhost.safety import safeDNSRec, safeDomain
+
+  # @TODO: this is duplicated in _txt and _mx
+  domains=user.domainNames(onlyZones=False)
+  if req.get("domain") and req.get("ID"):
+    dom = safeDomain(user, req["domain"])
+    dns = safeDNSRec(dom, int(req["ID"]))
+  else:
+    dns = DNSRec(domain=Domain(domain='dummy.domain'))
+?>
+<html py:strip="True"
+      xmlns:py="http://genshi.edgewall.org/" 
+      xmlns:xi="http://www.w3.org/2001/XInclude"> 
+<div py:match="content">
+
+  <py:if test="dns.ID">
+    <h2>edit custom TXT record</h2>
+  </py:if>
+  <py:if test="not dns.ID">
+    <h2>add custom TXT record</h2>
+  </py:if>
+  
+  <div style="width: 50%; padding-bottom:50px; float: left">
+    <form action="user.app" method="post">
+      <input type="hidden" name="action" value="save_dns_txt"/>
+      <input type="hidden" name="rectype" value="TXT"/>
+      
+      <py:if test="dns.ID">
+	${Markup(html.hidden("ID", dns.ID))}
+      </py:if>
+      
+      <table>
+	<tr>
+	  <td>domain:</td>
+	  <td>${Markup(html.select("domain", domains, dns.domain.domain))}</td>
+	</tr>
+	<tr>
+	  <td>value:</td>
+	  <?python
+	    value = dns.value.replace('"',"&quot;")
+	  ?>
+	  <td>${Markup(html.text("value", value))}</td>
+	</tr>
+      </table>
+      <br/>
+      <input type="submit" value="save record"/>
+    </form>
+    
+    <py:if test="dns.ID">
+      <form action="user.app" method="post">
+	<br/>
+	<input type="hidden" name="action" value="delete_record"/>
+	${Markup(html.hidden("ID", dns.ID))}
+	${Markup(html.hidden("domain_in", dns.domain.domain))}
+	<input type="submit" value="delete record"/>
+      </form>
+    </py:if>
+  </div>
+  
+  <p>
+    TXT records are essentially comments, but are also be used in the
+    <a href="http://spf.pobox.com/">sender policy framework</a>
+    to help prevent spammers and viruses from sending fake emails 
+    from your domain. The <a href="http://spf.pobox.com/wizard.html">SPF
+    wizard</a> can help you build a valid TXT record.
+  </p>
+</div>
+
+<xi:include href="master.gen"/>
+</html>

@@ -1,0 +1,61 @@
+<?python
+
+hogs = each
+tcost = 0
+
+?>
+<html py:strip="True"
+      xmlns:py="http://genshi.edgewall.org/" 
+      xmlns:xi="http://www.w3.org/2001/XInclude"> 
+<div py:match="content">
+
+<h2>top 20 bandwidth hogs from yesterday</h2>
+
+
+<p>@TODO: this page doesn't seem to work with genshi. :(</p>
+
+<form action="admin.app" method="get">
+  <input type="hidden" name="action" value="traffic"/>
+  <py:if test="server != '%'">
+    <b>statistics for ${server}.</b>
+  </py:if>
+  show results for
+  <select name="server">
+    <py:for each="s in servers">
+      <option>${s.server}</option>
+    </py:for>
+  </select>
+  <input type="submit" value="go"/>
+</form>
+
+<table cellspacing="0" cellpadding="2" width="500">
+  <py:for each="e in hogs">
+    <?python
+      dcost = ( e.traffic / 1000000000.0 * 3.5);
+      mcost = dcost * 30
+      tcost += dcost
+      ttraf += e.traffic
+    ?>
+    <tr>
+      <td>${e.server}</td>
+      <td><a href="admin.app?action=jump&amp;jumpto=${e.username}">${e.username}</a></td>
+      <td>${e.plan}</td>
+      <td align="right">${readable(traffic)}</td>
+      <td align="right">=</td>
+      <td align="right">${ '%10.2f' % dcost }/d</td>
+      <td align="right">${ '%10.2f' % mcost }/m</td>
+    </tr>
+  </py:for>
+  <tr>
+    <td align="right"></td>
+    <td align="right"></td>
+    <td align="right"></td>
+    <td style="border-top: solid black 2px;" align="right">${ ttraf }</td>
+    <td align="right"></td>
+    <td style="border-top: solid black 2px;" align="right">${ '%10.2f' % tcost }/d</td>
+    <td style="border-top: solid black 2px;" align="right">${ '%10.2f' % (tcost * 30) }/m</td>
+  </tr>
+</table>
+</div>
+<xi:include href="master.gen"/>
+</html>

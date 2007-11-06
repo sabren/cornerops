@@ -1,0 +1,27 @@
+<html py:strip="True"
+      xmlns:py="http://genshi.edgewall.org/" 
+      xmlns:xi="http://www.w3.org/2001/XInclude"> 
+<div py:match="content">
+
+<h2>Create Account + User from Signup</h2>
+
+<py:if test="signups">
+  Select a signup:
+  <table class="full">
+    <py:for each="s in signups">
+      <tr>
+	<td>${s.service}</td>
+	<td><a href="admin.app?action=review&amp;ID=${s.ID}">
+	${s.fname} ${s.lname}</a></td>
+      </tr>
+    </py:for>
+  </table>
+</py:if>
+
+<py:if test="not signups">
+  <b style="color:red">no signups</b>
+</py:if>
+</div>
+
+<xi:include href="master.gen"/>
+</html>

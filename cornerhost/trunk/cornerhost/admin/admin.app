@@ -1,19 +1,19 @@
 # admin.app
 from cornerhost import AdminApp, User
 from cornerhost import tiles
-from cornerhost.tiles import AdminUserPage, ZebraTile, SimpleTile
-ZebraTile.path = "../skin"
+from cornerhost.tiles import GenshiTile
+GenshiTile.path = "../skin"
 app = AdminApp(CLERK, SESS)
-app.tiles = tiles.makeUserWebMap(AdminUserPage)
+app.tiles = tiles.makeUserWebMap()
 app.tiles.update({
-    "servers"      : lambda : AdminUserPage(ZebraTile("servers.zb")),
-    "signups"      : lambda : AdminUserPage(ZebraTile("signups.zb")),
-    "review"       : lambda : AdminUserPage(ZebraTile("review.zb")),
-    "traffic"      : lambda : AdminUserPage(ZebraTile("traffic.zb")),
-    "genhttpconf"  : lambda : AdminUserPage(ZebraTile("message.zb")),
-    "ispasswd"     : lambda : AdminUserPage(ZebraTile("message.zb")),
-    "setup"        : lambda : AdminUserPage(ZebraTile("message.zb")),
-    "userdel"      : lambda : AdminUserPage(ZebraTile("message.zb")),    
+    "servers"      : lambda : GenshiTile("servers.gen"),
+    "signups"      : lambda : GenshiTile("signups.gen"),
+    "review"       : lambda : GenshiTile("review.gen"),
+    "traffic"      : lambda : GenshiTile("traffic.gen"),
+    "genhttpconf"  : lambda : GenshiTile("message.gen"),
+    "ispasswd"     : lambda : GenshiTile("message.gen"),
+    "setup"        : lambda : GenshiTile("message.gen"),
+    "userdel"      : lambda : GenshiTile("message.gen"),
 })
 app.defaultAction="servers"
 app.isAdmin = True

@@ -1,0 +1,60 @@
+
+<div xmlns:py="http://genshi.edgewall.org/" py:strip="True">
+
+<div id="logo">
+  <img src="/cornerhost/cornerhostlogo150.png" alt="cornerhost" width="150" height="22"/>
+</div> 
+
+<div id="user">
+  logged in as <b>${ '%s@%s' % (user.username, user.server.name) if user.server else '(admin)' }</b> |
+  <a class="action" href="user.app?auth_logout_flag=1">logout</a>
+</div>
+
+  
+<div id="toolbox">
+  <ul>  
+    <li class="group">web</li>
+    <ul>
+      <li><a href="user.app?action=list_sites">list sites</a></li>
+    </ul>
+    
+    <li class="group">dns</li>
+    <ul>
+      <li><a href="user.app?action=add_domain">add domain</a></li>
+      <py:if test="len(user.domains)">
+	<li><a href="user.app?action=add_subdomain">add subdomain</a></li>
+	<li><a href="user.app?action=edit_dns_mx">add MX record</a></li>
+	<li><a href="user.app?action=edit_dns_txt">add TXT record</a></li>
+	<li><a href="user.app?action=list_domains">edit dns records</a></li>
+      </py:if>
+    </ul>
+    
+    <li class="group">email</li>
+    <ul>
+      <py:if test="len(user.domains)">
+	<li><a href="user.app?action=email">edit rules</a></li>
+      </py:if>
+      <li><a href="user.app?action=list_boxes">edit mailboxes</a></li>
+    </ul>
+    
+    <py:if test="user.plan.name != 'basic'">
+      <li class="group">mysql</li>
+      <ul>  
+	<li><a href="user.app?action=list_databases">edit databases</a></li>
+      </ul>
+      <li class="group">cron</li>
+      <ul>
+	<li><a href="user.app?action=cron">edit crontab</a></li>
+      </ul>
+    </py:if>
+      
+    <li class="group">options</li>
+    <ul>
+      <li><a href="user.app?action=password">change password</a></li>
+    </ul>
+  </ul>
+</div>
+
+<div id="navbarBack"></div>
+
+</div>

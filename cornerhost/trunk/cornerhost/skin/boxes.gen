@@ -1,0 +1,90 @@
+<?python
+allowAdd = canAdd and boxes_left
+canAdd = user.boxquota > 0
+boxes_left = max(0, user.boxquota - len(user.boxes))
+
+from strongbox import BoxView
+boxes = [BoxView(b) for b in user.boxes]
+boxes.sort(lambda a,b: cmp(a.mailbox, b.mailbox))
+
+?>
+<html py:strip="True"
+      xmlns:py="http://genshi.edgewall.org/" 
+      xmlns:xi="http://www.w3.org/2001/XInclude"> 
+<div py:match="content">
+
+<py:if test="req.get('deleted')">
+  <p style="color:green"><b>Mailbox deleted!</b></p>   
+</py:if>
+
+<py:if test="changed">
+  <p style="color:green"><b>Configuration updated!</b></p>
+</py:if>
+
+<h2>your mailboxes</h2>
+
+<table class="email" border="0" cellspacing="0" cellpadding="2">
+
+  <py:for each="b in boxes">
+    <tr>
+      <td><b>${b.mailbox}</b></td>
+      <td style="text-align:right"><a href="user.app?action=show_box&amp;mailbox=${b.mailbox}">change password</a>
+      | <a href="user.app?action=delete_box&amp;mailbox=${b.mailbox}">delete</a></td>
+    </tr>
+    <tr>
+      <td colspan="2" class="indent" style="background:white; padding-bottom:20px;">
+	this account collects mail for:
+	<py:if test="rules">
+	  <ul style="margin-top: 0px; margin-bottom:0; padding-top:0 padding-bottom:0;">
+	    <py:for each="r in rules">
+	      <py:if test="r.virtuser == '(catchall)'">
+		<li>
+		  <a href="user.app?action=edit_catchall&amp;domName=${domain.domain}">
+		  <em>${r.virtuser}</em> @${domain.domain}</a>
+		</li>
+	      </py:if>
+	      <py:if test="r.virtuser != '(catchall)'">
+		<li><a href="user.app?action=edit_rule&amp;virtuser=${virtuser}&amp;domName=${domain.domain}"
+		       >${r.virtuser}@${domain.domain}</a></li>
+	      </py:if>
+	    </py:for>
+	  </ul>
+	</py:if>
+	
+	<py:if test="not rules">
+	  <em>(no addresses map to this account)</em>
+	</py:if>
+      </td>
+    </tr>
+  </py:for>
+  
+  <py:if test="not boxes">
+    <tr><td colspan="2" style="background:white">No mailboxes defined.</td></tr>
+  </py:if>  
+</table>
+
+<py:if test="allowAdd">
+  <h2>add mailbox</h2>
+  <p>You can add up to ${boxes_left} more mailboxes with your current plan.</p>
+  
+  <p><b>Naming convention:</b> please start the account name
+  with <b>pop_${user.username}_</b> so as not to
+  conflict with accounts owned by other users.</p>
+  
+  <p>Even though the account name starts with "pop", 
+  you can still use them with IMAP mail readers.</p>
+  
+  <form method="POST" action="user.app">
+    mailbox name:
+    <input type="text" name="mailbox" value="pop_${user.username}_xxx"/>
+    <input type="hidden" name="action" value="create box"/>
+    <input type="submit" value="create mailbox"/>
+  </form>
+</py:if>
+<py:if test="not allowAdd">
+  <p><em>You currently have the maximum number of mailboxes for your plan.<br/>
+  If you need more, please contact support.</em></p>
+</py:if>
+</div>
+<xi:include href="master.gen"/>
+</html>

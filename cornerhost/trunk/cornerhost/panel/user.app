@@ -1,12 +1,12 @@
 
 ## public version of user.app  #################################
 from cornerhost import UserApp
-from cornerhost.tiles import UserPage, makeUserWebMap, ZebraTile
+from cornerhost.tiles import makeUserWebMap
 from weblib import Finished, Redirect
 
-ZebraTile.path = "../skin"
+GenshiTile.path = "../skin"
 app = UserApp(USER, CLERK, sess=SESS)
-app.tiles = makeUserWebMap(UserPage)
+app.tiles = makeUserWebMap()
 app.default="list_sites"
 app.isAdmin=False
 try:
