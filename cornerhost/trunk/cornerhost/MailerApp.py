@@ -49,7 +49,5 @@ class MailerApp(App):
         sendmail("From: %s\nTo: %s\nCC: %s\nBCC: %s\nSubject: %s\n%s" \
                  % (msg_from, msg_to, cc, bcc, subject, msg))
 
-        print >> self, zebra.fetch("../skin/header.zb", self.model)
         print >> self, "message sent!"
-        print >> self, zebra.fetch("../skin/footer.zb", self.model)
         
