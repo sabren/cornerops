@@ -38,10 +38,11 @@ class SaveSiteCommand(SiteFeature):
         pass # only admin can do this
 
     def invoke(self, _clerk, _user, name, haserrs=0, suExec=0, docroot='', extra=None):
-
-        s = safety.safeSiteByName(_user, name)        
+        
+        s = safety.safeSiteByName(_user, name)
         try:
             s.docroot = docroot
+            assert not hasattr(s.private, "isStub"), "set_docroot didn't clear .isStub"
             s.haserrs = haserrs
             s.suExec = suExec
             self._assignExtra(s, extra)

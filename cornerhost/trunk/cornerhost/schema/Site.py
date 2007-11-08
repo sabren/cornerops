@@ -28,8 +28,7 @@ class Site(Strongbox):
                 raise ValueError, "'..' not allowed in docroot"
             if not re.match(r'^(\w|\.|-|/)*$', value):
                 raise ValueError, "invalid characters in docroot: %s" % value
-        self.private.docroot = (value or '').replace("\n", "")
-        self.private.isDirty = True
+        self.onSet('docroot', (value or '').replace("\n", ""))
 
     def get_docroot(self):        
         return self.private.docroot
