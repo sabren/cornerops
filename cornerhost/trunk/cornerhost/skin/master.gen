@@ -82,7 +82,7 @@
 	    ${'Invalid %s: %s' % (error.args)}
 	  </span>
 	  <span py:when="isinstance(error, TypeError) and len(error.args)==4">
-	    {:'Invalid %s: %s' % (error.args[:2]):}
+	    ${'Invalid %s: %s' % (error.args[:2])}
 	  </span>
 	  <py:otherwise>
 	    ${str(error).replace("exceptions.Exception:","").replace("NO:","")}

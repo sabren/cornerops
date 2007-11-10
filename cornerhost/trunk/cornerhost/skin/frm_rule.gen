@@ -80,8 +80,8 @@
     go into your main cornerhost mailbox (<em>${user.username}</em>)<br/>
     
     <py:for each="b in boxes">
-      ${Markup(html.radio("rule", rule.mailto==mailbox, mailbox))}
-      go into mailbox: ${mailbox}<br/>
+      ${Markup(html.radio("rule", rule.mailto==b.mailbox, b.mailbox))}
+      go into mailbox: ${b.mailbox}<br/>
     </py:for>
         
     ${Markup(html.radio("rule", "@" in rule.mailto, "forward"))}
