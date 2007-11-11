@@ -30,11 +30,13 @@ d = safeDomain(user, name)
     </py:if>
     
     <py:if test="not d.is_site">
-      * if d.site:
+      <py:if test="d.site">
       This domain is currently pointed at the 
       <a href="user.app?action=edit_site&amp;name=${d.site.domain.domain}">${d.site.domain.domain} site</a>.
-      * el:
+      </py:if>
+      <py:if test="not d.site">
       This domain is not currently pointed at a website.
+      </py:if>
     </py:if>
     
     <p>Point this domain at: 
