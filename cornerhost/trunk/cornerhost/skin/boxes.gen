@@ -1,7 +1,7 @@
 <?python
-allowAdd = canAdd and boxes_left
 canAdd = user.boxquota > 0
 boxes_left = max(0, user.boxquota - len(user.boxes))
+allowAdd = canAdd and boxes_left
 
 from strongbox import BoxView
 boxes = [BoxView(b) for b in user.boxes]
