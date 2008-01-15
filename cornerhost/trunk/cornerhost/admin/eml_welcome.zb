@@ -50,7 +50,6 @@ options are:
    win: http://winscp.net/eng/download.php
    mac: http://rsug.itd.umich.edu/software/fugu/
 
- 
 
 #[ dns ]####################################################
 
@@ -90,11 +89,18 @@ The server is accepting mail for your domain, and all
 mail to any username at that domain will be forwarded
 to your account here.
 
-To check it, create a new pop3 or IMAP account in your
-mail software, using the following information:
+In order to reduce spam, you will probably want to 
+disable this catch-all rule, and instead allow mail
+only for the addresses you actually use. There is a 
+walkthrough explaining how to do this here:
+
+  http://cornerhost.net/wiki/moin.cgi/FAQ/spam
+
+To check a mailbox, create a new POP3 or IMAP account
+in your mail software, using the following information:
 
      email address: whatever-you-want@your-domain.com
-          username: your username
+          username: your username or mailbox name
           password: your password
   POP3/IMAP server: {:server.name:}.sabren.com
        SMTP server: [provided by your ISP]
@@ -174,7 +180,6 @@ the best place to voice your ideas about improving
 cornerhost. You can subscribe online at:
 
 http://www.cornerhost.com/mailman/listinfo/innercircle
- 
 
 
 #[ online help ]############################################
@@ -185,7 +190,6 @@ the cornerhost wiki:
   http://cornerhost.net/wiki/
 
 This is a great place to start if you need help.
-
 
 
 #[ payment ]################################################
