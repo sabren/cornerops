@@ -68,12 +68,15 @@ def emailCustomer(acc, result, details, lastfour, amount):
             %(result)s
             %(details)s
 
-
         Could you please look into this? If you would like
         to use a different means of payment or enter a
         different card, you can do so here:
 
             http://%(brand)s.com/payment/
+
+        If the only thing that has changed is the expiration
+        date on your card, you can just email me the new
+        date.
 
         Thanks!
 
