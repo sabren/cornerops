@@ -48,7 +48,7 @@
 	    <a href="user.app?action=edit_domain&amp;name=${sub.name}">${sub.prefix}</a>
 	  </py:if>
 	  <py:if test="not sub.site">
-	    <span class="siteless"><a href="user.app?action=edit_domain&amp;name=${z.name}">${sub.prefix}</a></span>
+	    <span class="siteless"><a href="user.app?action=edit_domain&amp;name=${sub.domain}">${sub.prefix}</a></span>
 	  </py:if>
 	</td>            
 	<td>
