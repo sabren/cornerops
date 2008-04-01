@@ -38,12 +38,28 @@ print >> RES, '</tr>'
 
 this, next = "odd", "even"
 totC, totP, totD = 0, 0, 0
+subC, subP = 0, 0
+
+lastYear = 'x'
 
 for row in cur.fetchall():
     period = row[0]
     charges = FixedPoint(row[1])
     payments= FixedPoint(row[2])
     diff = charges - payments
+
+    year = str(period)[-1]
+    if (year != lastYear):
+        if lastYear != 'x':
+            print >> RES, '<tr class="subtotal">'
+            print >> RES, '<td>&nbsp</td><td align="right">%s</td><td align="right">%s</td><td>&nbsp;</td>' \
+                  % (subP, subC)
+            print >> RES, '</tr>'
+        subC = 0
+        subP = 0
+        lastYear = year
+        
+        
 
     print >> RES, '<tr class="%s">' % this
     print >> RES, '<td>%s</td><td align="right">%s</td><td align="right">%s</td>' \
@@ -52,7 +68,11 @@ for row in cur.fetchall():
     print >> RES, '</tr>'
 
     totC += charges
+    subC += charges
+    
     totP += payments
+    subP += payments
+    
     totD += diff
     this, next = next, this
 
