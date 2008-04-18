@@ -17,11 +17,12 @@ class NewSiteGrunt(object):
         "zon": "can't add subdomain to a subdomain",
     }    
     
-    def __init__(self, clerk, user):
+    def __init__(self, clerk, user, sabrenOK=False):
         self.clerk = clerk
         assert isinstance(user, User), "NewSiteGrunt takes a User object now"
         self.user = user
         self.log = ""
+        self.sabrenOK = sabrenOK
 
     def newSite(self, domain):
         """
@@ -40,6 +41,7 @@ class NewSiteGrunt(object):
         """
         s = self.addSite(domain)
         self.makeDirs(domain)
+        self.user.getBeaker().mqsend('genhttpconf')
         return s
 
     def checkDomain(self, domain, subsokay=0):
@@ -62,7 +64,7 @@ class NewSiteGrunt(object):
                 if domain.endswith( "." + d.domain):
                     raise ValueError, self.ERR["sub"]
 
-        if domain.endswith(".sabren.com"):
+        if domain.endswith(".sabren.com") and not self.sabrenOK:
             raise ValueError, self.ERR["sei"]
 
         return domain # filtered for lowercase, etc..

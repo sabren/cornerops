@@ -9,7 +9,7 @@
   Select a signup:
   <table class="full">
     <py:for each="s in signups">
-      <tr>
+      <tr py:if="not s.status =='filled'">
 	<td>${s.service}</td>
 	<td><a href="admin.app?action=review&amp;ID=${s.ID}">
 	${s.fname} ${s.lname}</a></td>

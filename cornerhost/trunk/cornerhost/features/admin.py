@@ -7,7 +7,7 @@ from cornerhost import remote
 from platonic import Model
 from weblib import Redirect
 from pytypes import Date
-
+from cornerhost import NewSiteGrunt
 
 ## admin only ####################################
   
@@ -55,7 +55,7 @@ class MakeUserCommand(AdminFeature):
         res = remote.getBeaker(server).addnew(p.plan, p.username, p.fullname)
         return res.strip().split()[-1] # from "password for user is pass"
 
-    def invoke(self, _clerk, signupID, account, plan, server, cycLen):
+    def invoke(self, _clerk, signupID, account, plan, server, cycLen, domains):
             
         p = _clerk.fetch(Signup, ID=long(signupID))
         p.plan = plan # @TODO: capture plan in cornerhost signups
@@ -73,10 +73,14 @@ class MakeUserCommand(AdminFeature):
         u.account = p.toDuckbill()
         _clerk.store(u)
 
-        ## @TODO: keep the signup around, marked as done?
         p.status="filled"
         _clerk.store(p)
-        
+
+        doms = [item.strip() for item in domains.split() if item.strip()]
+        g = NewSiteGrunt(_clerk, u, sabrenOK = True)
+        for dname in doms:
+            g.newSite(dname)
+            
         ## show the password!
         #@TODO: make this do something sensible instead
         assert 0, "password for %s is %s" % (account, pw)

@@ -53,13 +53,13 @@ class SaveRuleFeature(EmailFeature):
 
 
 class SaveRuleCommand(SaveRuleFeature):
-    def checkDuplicate(self, rule):
+    def checkDuplicate(self, rule, dom):
         #@TODO: move this to EmailRule itself on set_domain
-        dupes = [dupe for dupe in rule.domain.rules
+        dupes = [dupe for dupe in dom.rules
                  if (rule.virtuser==dupe.virtuser) and (dupe is not rule)]
         if dupes:
             raise ValueError("dupe",
-                "%s@%s" % (rule.virtuser, rule.domain.domain))
+                "%s@%s" % (rule.virtuser, dom.domain))
 
     def do_save_rule(self,_clerk,_user, ID, oldDom, virtuser, domName, mailto):
         #@TODO: there's a dependency here that I don't know how to expose.
@@ -72,12 +72,15 @@ class SaveRuleCommand(SaveRuleFeature):
         else:
             rule = EmailRule()
         
-        dom = safety.safeDomain(_user, domName)
-        if rule not in dom.rules:
-            dom.rules << rule
         rule.virtuser=virtuser
         rule.mailto=mailto
-        self.checkDuplicate(rule)
+
+        dom = safety.safeDomain(_user, domName)
+        self.checkDuplicate(rule, dom)
+
+        if rule not in dom.rules:
+            dom.rules << rule
+            
         _clerk.store(dom)
         _user.getBeaker().genmailconf()
 

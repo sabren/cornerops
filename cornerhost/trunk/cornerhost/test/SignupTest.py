@@ -20,8 +20,9 @@ class SignupTest(unittest.TestCase):
         assert a.brand == "cornerhost"
         assert len(a.subscriptions) == 1
         assert a.subscriptions[0].username == "ftempy"
-        assert a.events[0].amount == 50
-        assert a.balance() == 50, a.balance()
+        assert a.events[0].amount == 0
+        assert a.events[0].note == "30 day free trial"
+        assert a.balance() == 0, a.balance() # 30 day trial
         assert a.cycLen == "month" # billing is always monthly!
         assert a.subscriptions[0].cycLen=="year"
 

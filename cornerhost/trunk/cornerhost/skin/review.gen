@@ -29,6 +29,10 @@
       <td>cycLen:</td>
       <td>${Markup(html.text("cycLen", signup.cycLen))}
     </td></tr>
+    <tr>
+      <td>domains:<br/>(one per line)</td>
+      <td>${Markup(html.textarea("domains", signup.domains, 'cols="50" rows="10"'))}
+    </td></tr>
   </table>
   <input type="submit" name="action" value="make user"/>
 </form>
