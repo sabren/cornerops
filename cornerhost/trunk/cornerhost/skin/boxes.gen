@@ -34,24 +34,24 @@ boxes.sort(lambda a,b: cmp(a.mailbox, b.mailbox))
     <tr>
       <td colspan="2" class="indent" style="background:white; padding-bottom:20px;">
 	this account collects mail for:
-	<py:if test="rules">
+	<py:if test="b.rules">
 	  <ul style="margin-top: 0px; margin-bottom:0; padding-top:0 padding-bottom:0;">
-	    <py:for each="r in rules">
+	    <py:for each="r in b.rules">
 	      <py:if test="r.virtuser == '(catchall)'">
 		<li>
-		  <a href="user.app?action=edit_catchall&amp;domName=${domain.domain}">
-		  <em>${r.virtuser}</em> @${domain.domain}</a>
+		  <a href="user.app?action=edit_catchall&amp;domName=${r.domain.domain}">
+		  <em>${r.virtuser}</em> @${r.domain.domain}</a>
 		</li>
 	      </py:if>
 	      <py:if test="r.virtuser != '(catchall)'">
-		<li><a href="user.app?action=edit_rule&amp;virtuser=${virtuser}&amp;domName=${domain.domain}"
-		       >${r.virtuser}@${domain.domain}</a></li>
+		<li><a href="user.app?action=edit_rule&amp;virtuser=${virtuser}&amp;domName=${r.domain.domain}"
+		       >${r.virtuser}@${r.domain.domain}</a></li>
 	      </py:if>
 	    </py:for>
 	  </ul>
 	</py:if>
 	
-	<py:if test="not rules">
+	<py:if test="not b.rules">
 	  <em>(no addresses map to this account)</em>
 	</py:if>
       </td>
