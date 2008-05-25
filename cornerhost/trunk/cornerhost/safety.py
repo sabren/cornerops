@@ -19,8 +19,8 @@ def only(series, cond):
     # error reporting:
     klass = series.type.__name__
     where = "where %s %s %s" % (cond.left.name, cond.operation, cond.right)
-    assert len(result) >  0, "no %s found %s" % (klass, where)
-    assert len(result) == 1, "found more than one %s %s" % (klass, where)
+    if len(result) ==  0: raise LookupError("no %s found %s" % (klass, where))
+    if len(result) > 1: raise LookupError("found more than one %s %s" % (klass, where))
 
     return result[0]
 
