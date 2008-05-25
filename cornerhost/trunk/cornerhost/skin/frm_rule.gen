@@ -19,29 +19,33 @@
   # and no mailbox name is given, it gives an
   # error and re-shows the form. but both the
   # catchall and normal rule commands use this
-  # form. So testing on "virtuser" when the
-  # virtuser wasn't given causes it to show
-  # the wrong form.
+  # form.
+  #
+  # Error can also happen if forward is set to
+  # someone@else.com or an invalid address.
   #
   # I think the real fix is to break this into
   # two completely separate forms, possibly with
   # a common central widget in an include file.
+
+  reqAction = req.get("action")
   
-  if (req.get("virtuser")):
-      # edit rule
+  if reqAction in ('edit_rule', 'save rule'):
       what = 'rule'
-      rule = safeEmailRule(d, req["virtuser"])
       action ='save rule'
-  elif req.get('action') == 'save new rule':
+      req.form.setdefault("oldVirt", req["virtuser"])
+      rule = safeEmailRule(d, req["oldVirt"])
+          
+  elif reqAction == 'save new rule':
       what = 'rule'
       action = 'save new rule'
       rule.mailto = '~'
-  elif (req.get('action') == 'add_rule'):
-      # add rule
+      
+  elif reqAction == 'add_rule':
       what = 'rule'
       action ='save new rule'
+
   else:
-      # catchall rule
       what = 'catchall'
       action = 'save catchall'
     
@@ -56,6 +60,8 @@
       xmlns:xi="http://www.w3.org/2001/XInclude"> 
 <div py:match="content">
 
+<h1>reqAction is : ${reqAction}</h1>
+
 <form action="user.app" method="post">
   ${Markup(html.hidden("domName", domName))}
   
@@ -68,7 +74,8 @@
 
   <py:if test="what=='rule'">
     <p>Mail for 
-    ${Markup(html.text("virtuser", rule.virtuser, 'ID="virtuser" style="text-align:right"'))}@${domName} 
+    ${Markup(html.text("virtuser", rule.virtuser or req.get("virtuser"),
+                       'ID="virtuser" style="text-align:right"'))}@${domName} 
     should:</p>
   </py:if>
   <py:if test="what=='catchall'">
@@ -87,7 +94,6 @@
     ${Markup(html.radio("rule", "@" in rule.mailto, "forward"))}
     forward to ${Markup(html.text("mailto", newmailto))}<br/>
 
-
     ${Markup(html.radio("rule", rule.mailto=='error:nouser', "bounce"))}
     bounce with a "no such user" message
   </div>
@@ -95,11 +101,11 @@
   <p></p>
 
   <input type="submit" name="action" value="${action}"/>
-  ${Markup(html.hidden("oldDom", rule.domain.domain))}
   
   <py:if test="rule.ID and (what!='catchall')">
     ${Markup(html.hidden("ID", rule.ID))}
     <input style="margin-left: 20px" type="submit" name="action" value="delete rule"/>
+    ${Markup(html.hidden("oldDom", rule.domain.domain))}
   </py:if>
   
 </form>

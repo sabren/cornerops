@@ -61,21 +61,23 @@ class SaveRuleCommand(SaveRuleFeature):
             raise ValueError("dupe",
                 "%s@%s" % (rule.virtuser, dom.domain))
 
-    def do_save_rule(self,_clerk,_user, ID, oldDom, virtuser, domName, mailto):
+    def do_save_rule(self,_clerk,_user, ID, virtuser, oldVirt, domName, mailto):
         #@TODO: there's a dependency here that I don't know how to expose.
         #If the rule attributes are changed before dom is loaded,
         #clerk won't save the rule. same thing with rule.dom=domain (vs <<)
         #however, I couldn't duplicate this in the test case
-        old = safety.safeDomain(_user, oldDom)
+
+        dom = safety.safeDomain(_user, domName)
         if ID:
-            rule = safety.safeEmailRuleByID(old, ID)
+            rule = safety.safeEmailRuleByID(dom, ID)
+        elif oldVirt:
+            rule = safety.safeEmailRule(dom, oldVirt)
         else:
             rule = EmailRule()
         
         rule.virtuser=virtuser
         rule.mailto=mailto
-
-        dom = safety.safeDomain(_user, domName)
+        
         self.checkDuplicate(rule, dom)
 
         if rule not in dom.rules:
@@ -84,8 +86,8 @@ class SaveRuleCommand(SaveRuleFeature):
         _clerk.store(dom)
         _user.getBeaker().genmailconf()
 
-    def invoke(self, _clerk, _user,domName, rule, mailto,
-               ID=0, virtuser='', oldDom=''):
+    def invoke(self, _clerk, _user, domName, mailto,
+               rule='~', ID=0, virtuser='', oldVirt=''):
         if not virtuser.strip():
             raise Intercept("no mailbox name given")
         try:
@@ -93,8 +95,8 @@ class SaveRuleCommand(SaveRuleFeature):
                 _clerk=_clerk,
                 _user=_user,
                 ID = ID,
-                oldDom = oldDom or domName,
                 virtuser = virtuser,
+                oldVirt = oldVirt,
                 domName = domName,
                 mailto = self.compileRule(rule, mailto))
         except ValueError, e:

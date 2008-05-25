@@ -31,7 +31,6 @@ class EmailFeaturesTest(unittest.TestCase):
         req = {
             '_clerk': self.clerk, '_user': self.user,
             'ID': '1',
-            'oldDom': 'fred.com',
             'domName':'fred.com',          
             'mailto':'good@forward.com',
             'rule':'forward' }
