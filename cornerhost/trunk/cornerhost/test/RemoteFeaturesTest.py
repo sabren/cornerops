@@ -21,7 +21,7 @@ class RemoteFeaturesTest(unittest.TestCase):
         # dbname must be filled in:
         self.assertRaises(TypeError, cmd.invoke)
         
-        # dbname must be valid (bad_name is harcoded to fail in MockMySQL)
+        # dbname must start with username_
         self.assertRaises(Intercept, cmd.invoke, u,c, dbname="bad_name")
         
         assert fred.username == "fred"

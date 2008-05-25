@@ -71,7 +71,8 @@ class UserApp(CornerApp):
         ### commands ###################
 
         # remote, 5 commands
-        c('create_database', remote.CreateDatabaseCommand, ni,
+        c('create_database', remote.CreateDatabaseCommand,
+          "list_databases",
           "?action=list_databases&changed=1")
         c('set_password', remote.SetPasswordCommand, "password",
           "?action=password&changed=1")

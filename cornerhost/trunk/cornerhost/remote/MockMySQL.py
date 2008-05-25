@@ -5,7 +5,7 @@ class MockMySQL(object):
     pwd = {}
 
     def createDatabase(self, username, dbname):
-        if dbname=='bad_name':
+        if not dbname.startswith(username + "_"):
             raise ValueError, 'invalid name: %s' % dbname
         else:
             self.dbs.setdefault(username, [])
