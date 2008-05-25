@@ -25,7 +25,7 @@ class DNSFeaturesTest(unittest.TestCase):
         # prevent you from deleting a domain with subdomain        
         cmd = dns.DeleteDomainCommand(self.uc)
         self.dom.subs << Domain(domain="sub.fred.com")
-        self.assertRaises(AssertionError, cmd.invoke, name='sub.fred.com')
+        self.assertRaises(AssertionError, cmd.invoke, name='fred.com')
 
     def test_RepointDomainCommand(self):
         cmd = dns.RepointDomainCommand(self.uc)
