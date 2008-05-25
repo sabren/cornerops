@@ -23,10 +23,10 @@ d = safeDomain(user, name)
   <fieldset>
     <h3>site settings</h3>
     <py:if test="d.is_site">
-      This is the main domain for the
+      <p>This is the main domain for the
       <a href="user.app?action=edit_site&amp;name=${d.domain}"
-	 >${d.domain} site</a>. 
-      If you want to delete this domain, delete the site first.
+	 >${d.domain} site</a>. </p>
+      <p>If you want to delete or repoint this domain, delete the site first.</p>
     </py:if>
     
     <py:if test="not d.is_site">
@@ -37,12 +37,13 @@ d = safeDomain(user, name)
       <py:if test="not d.site">
       This domain is not currently pointed at a website.
       </py:if>
-    </py:if>
     
-    <p>Point this domain at: 
-    ${Markup(html.select("repoint_to", [("new_site", "(its own new site)")]+[(s.domain.domain, s.domain.domain) for s in user.sites], ))}
-    <input type="submit" value="go"/>
-    </p>
+      <p>Repoint this domain to: 
+         ${Markup(html.select("repoint_to", 
+	     [("new_site", "(its own new site)")]
+	    +[(s.domain.domain, s.domain.domain) for s in user.sites], ))}
+        <input type="submit" value="go"/></p>
+    </py:if>
   </fieldset>
 </form>
 
