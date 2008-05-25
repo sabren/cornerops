@@ -31,7 +31,7 @@ class SiteFeaturesTest(unittest.TestCase):
         assert newSite.extra == oldSiteExtra
         assert newSite.suExec
         assert not newSite.haserrs
-        assert newSite.docroot == 'top'
+        self.assertEquals("top", newSite.docroot)
 
     def test_SaveSiteCommand_bad(self):
         uclerk = personas.fredClerk()
@@ -50,7 +50,7 @@ class SiteFeaturesTest(unittest.TestCase):
         assert newSite.extra == 'valid admin extra'
         assert newSite.suExec
         assert not newSite.haserrs
-        assert newSite.docroot == 'top'
+        self.assertEquals("top", newSite.docroot)
 
 
 if __name__=="__main__":
