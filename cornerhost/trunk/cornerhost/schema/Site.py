@@ -22,13 +22,15 @@ class Site(Strongbox):
     def get_default_docroot(self):
         return '%s/%s' % (self.docroot_prefix, self.domain.domain)
 
+    #@TODO: would rather not have to set .private and call .onSet explicitly
     def set_docroot(self, value):
         if value:
             if value.count('..'):
                 raise ValueError, "'..' not allowed in docroot"
             if not re.match(r'^(\w|\.|-|/)*$', value):
                 raise ValueError, "invalid characters in docroot: %s" % value
-        self.onSet('docroot', (value or '').replace("\n", ""))
+        self.private.docroot = (value or '').replace("\n", "")
+        self.onSet('docroot', self.private.docroot)
 
     def get_docroot(self):        
         return self.private.docroot

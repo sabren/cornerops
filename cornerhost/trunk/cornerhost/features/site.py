@@ -43,6 +43,7 @@ class SaveSiteCommand(SiteFeature):
         try:
             s.docroot = docroot
             assert not hasattr(s.private, "isStub"), "set_docroot didn't clear .isStub"
+            assert s.docroot == docroot
             s.haserrs = haserrs
             s.suExec = suExec
             self._assignExtra(s, extra)
