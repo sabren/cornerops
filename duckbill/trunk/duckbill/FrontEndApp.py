@@ -37,8 +37,11 @@ class FrontEndApp(sixthday.AdminApp):
             try:
                 if jump.count(" "):
                     fn, ln = jump.split(" ", 1)
+                    kw = {}
+                    if fn != "*": kw['fname']=fn
+                    if ln != "*": kw['lname']=ln
                     self.jumpto_accounts(
-                        self.clerk.match(Account, fname=fn, lname=ln))
+                        self.clerk.match(Account, **kw))
 
                 elif jump.count("@"):
                     self.jumpto_accounts(
