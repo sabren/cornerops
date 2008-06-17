@@ -5,7 +5,6 @@ __ver__="$Id: FrontEndAppTest.py,v 1.11 2006/07/02 06:08:09 sabren Exp $"
 
 import unittest
 import duckbill
-import duckbill.spec
 import weblib
 from clerks import MockClerk
 from duckbill.config import schema

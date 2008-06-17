@@ -8,14 +8,16 @@ import duckbill
 from pytypes import Date
 from duckbill import Subscription, Account
 
-from duckbill.spec import FIRST_STATEMENT_AMOUNT
-from duckbill.spec import SECOND_STATEMENT_DATE
-from duckbill.spec import CUSTOMER_SIGNUP_DATE
+from duckbill.test import (
+    FIRST_STATEMENT_AMOUNT,
+    SECOND_STATEMENT_DATE,
+    CUSTOMER_SIGNUP_DATE,
+    fakeSubscription)
 
 class SubscriptionTest(unittest.TestCase):
 
     def setUp(self):
-        self.sub = duckbill.spec.fakeSubscription()
+        self.sub = fakeSubscription()
         self.today, duckbill.TODAY = duckbill.TODAY, CUSTOMER_SIGNUP_DATE
 
     #@TODO: move this to Cycle
@@ -33,7 +35,7 @@ class SubscriptionTest(unittest.TestCase):
         """
         onDue should post a charge and update nextDue.
         """
-        self.sub = duckbill.spec.fakeSubscription()
+        self.sub = fakeSubscription()
         a = Account()
         self.sub.account = a
         self.sub.service = "service"

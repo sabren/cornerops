@@ -5,7 +5,6 @@ __ver__="$Id: CyclicTest.py,v 1.8 2005/04/22 06:44:19 sabren Exp $"
 
 import unittest
 import duckbill
-import duckbill.spec
 from pytypes import Date
 from duckbill import TODAY
 from strongbox import attr

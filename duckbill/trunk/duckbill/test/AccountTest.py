@@ -5,7 +5,7 @@ __ver__="$Id: AccountTest.py,v 1.13 2006/07/02 06:08:09 sabren Exp $"
 
 import unittest
 import duckbill
-import duckbill.spec
+from duckbill.test import fakeAccount
 from duckbill import Account, Event, Subscription
 from pytypes import Date
 
@@ -15,7 +15,7 @@ class AccountTest(unittest.TestCase):
         """
         This should find the statement with the latest 'posted' time.
         """
-        acc = duckbill.spec.fakeAccount()
+        acc = fakeAccount()
         acc.opened = Date("1/1/2001")
         assert acc.whenLastStatementPosted() == Date("1/1/2001")
         assert len(acc.events) == 0
@@ -33,7 +33,7 @@ class AccountTest(unittest.TestCase):
         pass # it's only one line... The magic's in Statement.__init__
 
     def test_balance(self):
-        acc = duckbill.spec.fakeAccount()
+        acc = fakeAccount()
         nEv = duckbill.newEvent
 
         assert acc.balance() == 0
@@ -44,7 +44,7 @@ class AccountTest(unittest.TestCase):
         assert acc.balance(Date("1/2/2001")) == 5
         
     def test_eventsBetween(self):
-        acc = duckbill.spec.fakeAccount()
+        acc = fakeAccount()
         then = Date("1/1/2001")
         now = Date("5/1/2001") # not really :)
 
