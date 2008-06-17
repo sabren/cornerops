@@ -1,6 +1,6 @@
 <?python
   from zebra import html
-  from cornerhost import EmailRule
+  from cornerhost import EmailRule, Domain
   from cornerhost.safety import safeDomain, safeEmailRule
   from strongbox import BoxView
   
@@ -11,9 +11,13 @@
   """
   domName = req.get('domName')
   assert domName, "domName parameter is required"
-  d = safeDomain(user, domName)
-  rule = EmailRule(domain=d, mailto=d.mailto)
-  
+
+  d = Domain(domName)
+  try:
+      d = safeDomain(user, domName)
+  except LookupError:
+      raise AssertionError("domain %s not found." % domName)
+
   # ugh. this is a kludge
   # the situation is this: if you add a new rule, 
   # and no mailbox name is given, it gives an
@@ -28,13 +32,23 @@
   # two completely separate forms, possibly with
   # a common central widget in an include file.
 
+  rule = EmailRule(domain=d, mailto=d.mailto)
+
   reqAction = req.get("action")
   
   if reqAction in ('edit_rule', 'save rule'):
       what = 'rule'
       action ='save rule'
-      req.form.setdefault("oldVirt", req["virtuser"])
-      rule = safeEmailRule(d, req["oldVirt"])
+      if error:
+          # if what we are trying to save is bad
+          # to begin with, there's no need for
+          # further testing.
+          pass
+      else:
+          ov = req.form.setdefault("oldVirt", req["virtuser"])
+          # this is just to make sure that if we are editing
+          # a rule, it's our rule to edit.
+          rule = safeEmailRule(d, ov)
           
   elif reqAction == 'save new rule':
       what = 'rule'
@@ -59,8 +73,6 @@
       xmlns:py="http://genshi.edgewall.org/" 
       xmlns:xi="http://www.w3.org/2001/XInclude"> 
 <div py:match="content">
-
-<h1>reqAction is : ${reqAction}</h1>
 
 <form action="user.app" method="post">
   ${Markup(html.hidden("domName", domName))}
