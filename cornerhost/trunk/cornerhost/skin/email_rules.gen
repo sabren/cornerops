@@ -1,13 +1,14 @@
 <?python
 
 from genshi.builder import tag
+from cornerhost import EmailRule
 
 hasDomains = [d for d in user.domains if not d.domain.endswith('.sabren.com')]
 
 def nicerule(mailto):
     if mailto=="~":
         return user.username
-    elif mailto=="error:nouser":
+    elif mailto==EmailRule.BOUNCE:
         return tag.em('(bounce)')
     return mailto 
 

@@ -106,7 +106,7 @@
     ${Markup(html.radio("rule", "@" in rule.mailto, "forward"))}
     forward to ${Markup(html.text("mailto", newmailto))}<br/>
 
-    ${Markup(html.radio("rule", rule.mailto=='error:nouser', "bounce"))}
+    ${Markup(html.radio("rule", rule.mailto==EmailRule.BOUNCE, "bounce"))}
     bounce with a "no such user" message
   </div>
   

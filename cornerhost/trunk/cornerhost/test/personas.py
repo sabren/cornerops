@@ -12,7 +12,7 @@ def makePerson(username, domain):
                 server=Server(name="mockium"))
     dom = user.domains << Domain(domain=domain)
     dom.site = user.sites << Site(domain=dom)
-    dom.rules << EmailRule(virtuser='spam', mailto='error:nouser')
+    dom.rules << EmailRule(virtuser='spam', mailto=EmailRule.BOUNCE)
     dom.rules << EmailRule(virtuser=username, mailto="~")
     return user
 

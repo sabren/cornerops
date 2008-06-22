@@ -24,7 +24,7 @@ class UserClerkTest(unittest.TestCase):
         rule = self.uclerk.safeEmailRule(rID)
         self.assertEquals(rule.ID, rID)
         self.assertEquals(rule.virtuser, 'spam')
-        self.assertEquals(rule.mailto, 'error:nouser')
+        self.assertEquals(rule.mailto, EmailRule.BOUNCE)
 
         
 

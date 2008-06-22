@@ -30,8 +30,8 @@ class SaveDNSRecCommand(DNSFeature):
             #@TODO: this is kludgy, but i can't put this in set_value
             # ...unless I split DNSRec into two classes...
             # ALSO, these should generally have a "." at the end!!
-            from cornerhost.schema.Domain import domainRE
-            if rectype=="MX" and not domainRE.match(rec.value):
+            from cornerhost.schema.Domain import reDomain
+            if rectype=="MX" and not reDomain.match(rec.value):
                 raise ValueError('value',rec.value)
             self.clerk.store(rec)
             

@@ -1,11 +1,22 @@
 __ver__="$Id: Domain.py,v 1.10 2007/04/20 09:31:00 sabren Exp $"
-from cornerhost import emailRE
-from cornerhost.schema import EmailRule, DNSRec, Site
 import cornerhost
-from strongbox import *
 import re
+from cornerhost.schema import EmailRule, DNSRec, Site
+from strongbox import *
 
-domainRE = re.compile(
+from EmailRule import reDefault, reBounce, rePopBox
+from pytypes import EmailAddress
+reRewrite = r"(%1|%2|%3|\w|-|\+)+(\.|%1|%2|%3|\w|-|\+)*@(\w|-)+(\.(\w|-)+)"
+reCatchall  = re.compile("^%s$" % "|".join([reDefault, reBounce, rePopBox, reRewrite]))
+reEmail = re.compile(EmailAddress.regex)
+
+def valid_catchall(s):
+    """
+    allow rewrite rules for sendmail but NOT normal forwards.
+    """
+    return bool(reCatchall.match(s)) #and not reEmail.match(s)
+
+reDomain = re.compile(
     """
     ^(\*\.)?         # optionally start wildcard
      (\w(-|\w)*\.)+  # followed by at least one non-wildcard chunk
@@ -18,8 +29,8 @@ class Domain(Strongbox):
     rule = attr(str, okay=['host','point','friend'], default='host')
     rectype = attr(str, okay=["a","cname","friend"], default="a")
     location = attr(str, default="",
-                    okay=lambda s: (not s) or domainRE.match(s.lower()))
-    mailto = attr(str, okay=emailRE, default='~')
+                    okay=lambda s: (not s) or reDomain.match(s.lower()))
+    mailto = attr(str, default='~', okay=lambda s: valid_catchall(s))
     processmail = attr(int, okay=[0,1], default=1)
     rules = linkset(EmailRule, "domain")
     dnsrecs = linkset(DNSRec, "domain")
@@ -42,7 +53,7 @@ class Domain(Strongbox):
     def set_domain(self, value):
         if type(value) not in (str, unicode):
             raise TypeError('Domain.name', value)
-        if domainRE.match(value):
+        if reDomain.match(value):
             self.private.domain = value.lower()
         else:
             raise ValueError, "invalid domain: %s" % value

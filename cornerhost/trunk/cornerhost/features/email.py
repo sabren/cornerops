@@ -38,7 +38,7 @@ class SaveRuleFeature(EmailFeature):
 
     def compileRule(self, rule, mailto):
         if rule =="bounce":
-            return "error:nouser"
+            return EmailRule.BOUNCE
         elif rule=="main":
             return "~"
         elif rule=="forward":
@@ -157,10 +157,10 @@ class DeleteBoxCommand(ControlPanelFeature):
 
         for rule in box.rules:
             if rule.virtuser=='(catchall)':
-                rule.domain.mailto = 'error:nouser'
+                rule.domain.mailto = EmailRule.BOUNCE
                 _clerk.store(rule.domain)
             else:
-                rule.mailto='error:nouser'
+                rule.mailto=EmailRule.BOUNCE
                 _clerk.store(rule)
 
         _clerk.delete(Mailbox, box.ID)
