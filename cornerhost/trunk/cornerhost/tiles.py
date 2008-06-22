@@ -36,7 +36,7 @@ def makeUserWebMap():
         "email"        : lambda : GenshiTile("email_rules.gen"),
         "add_rule"     : lambda : GenshiTile("frm_rule.gen"),
         "edit_rule"    : lambda : GenshiTile("frm_rule.gen"),
-        "edit_catchall": lambda : GenshiTile("frm_rule.gen"),
+        "edit_catchall": lambda : GenshiTile("frm_catchall.gen"),
         "cron"         : lambda : GenshiTile("cron.gen"),
         "password"     : lambda : GenshiTile("password.gen"),
         "show_box"     : lambda : GenshiTile("mailbox.gen"),

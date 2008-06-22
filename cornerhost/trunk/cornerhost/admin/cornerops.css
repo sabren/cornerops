@@ -181,6 +181,11 @@ a.help {
   color: green;
 }
 
+.help { 
+  background: #efe;
+  color: green;
+}
+
 /*/
 .even { background: #ffeecc; } 
 .odd { background:  #ffee99; }

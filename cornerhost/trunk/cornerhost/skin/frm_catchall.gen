@@ -1,0 +1,95 @@
+<?python
+  from zebra import html
+  from cornerhost import EmailRule, Domain
+  from cornerhost.safety import safeDomain
+  from strongbox import BoxView
+  
+  domName = req.get('domName')
+  assert domName, "domName parameter is required"
+
+  d = Domain(domName)
+  try:
+      d = safeDomain(user, domName)
+  except LookupError:
+      raise AssertionError("domain %s not found." % domName)
+
+  rule = EmailRule(domain=d, mailto=d.mailto)
+  boxes = [BoxView(b) for b in  user.boxes]
+
+  newmailto = rule.mailto or ''
+  if "@" not in rule.mailto:
+      newmailto = ''
+?>
+<html py:strip="True"
+      xmlns:py="http://genshi.edgewall.org/" 
+      xmlns:xi="http://www.w3.org/2001/XInclude"> 
+<div py:match="content">
+
+<form action="user.app" method="post">
+  
+  <h2>edit catchall</h2>
+
+  <p>By default, mail for <b>${domName}</b> should:</p>
+  
+  <div style="padding-left: 10px">
+
+    ${Markup(html.hidden("domName", domName))}
+
+    ${Markup(html.radio("rule", rule.mailto==EmailRule.BOUNCE, "bounce"))}
+    bounce with a "no such user" message <strong>(recommended)</strong><br/>
+
+    ${Markup(html.radio("rule", rule.mailto=="~", "main", 'ID="rule"'))}
+    go into your main cornerhost mailbox (<em>${user.username}</em>)<br/>
+    
+    <py:for each="b in boxes">
+      ${Markup(html.radio("rule", rule.mailto==b.mailbox, b.mailbox))}
+      go into mailbox: ${b.mailbox}<br/>
+    </py:for>
+        
+    ${Markup(html.radio("rule", "@" in rule.mailto, "forward"))}
+    map to: ${Markup(html.text("mailto", newmailto))} (see below)<br/>
+
+  </div>
+  
+  <p><input type="submit" name="action" value="save catchall"/></p>
+  
+</form>
+
+<p><br/></p>
+
+<div class="help">
+<p><strong>Catchall rules attract spam.</strong></p>
+<p>Spammers will often try out random addresses at your domain.<br/>
+   Addresses that don't bounce will wind up on their lists.</p>
+<p>Therefore, you should set your catchall rules to <strong>bounce</strong>,<br/>
+   and then <a href="?add_rule&amp;domName=${domName}">add a rule</a>
+   for each address you actually want to use.</p>
+
+<p><br/></p>
+
+<p><strong>Catchall forwarding is prohibited.</strong></p>
+
+<p>Sadly, many ISPs make no distinction between forwarding spam
+   and <em>sending</em> spam, and catchall forwarding results in 
+   frequent blacklisting of the cornerhost servers, so it is no 
+   longer allowed.</p>
+
+<p>You may still add rules to forward specific addresses.</p>
+
+<p><br/></p>
+
+<p><strong>About the "map to" option:</strong></p>
+<p>This is an advanced sendmail configuration option.</p>
+<p>It is probably <em>not</em> what you want.</p>
+<p>Example: <code>%1@example.com</code> would map
+  <em>name@${domName}</em> to <em>name@example.com</em>.</p>
+<p>(The mapped domain <em>must</em> be hosted on this cornerhost account.)</p>
+</div>
+
+<script type="text/javascript">
+    document.getElementById("rule").focus();
+</script>
+
+</div>
+<xi:include href="master.gen"/>
+</html>

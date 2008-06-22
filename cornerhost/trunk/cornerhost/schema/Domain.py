@@ -10,12 +10,6 @@ reRewrite = r"(%1|%2|%3|\w|-|\+)+(\.|%1|%2|%3|\w|-|\+)*@(\w|-)+(\.(\w|-)+)"
 reCatchall  = re.compile("^%s$" % "|".join([reDefault, reBounce, rePopBox, reRewrite]))
 reEmail = re.compile(EmailAddress.regex)
 
-def valid_catchall(s):
-    """
-    allow rewrite rules for sendmail but NOT normal forwards.
-    """
-    return bool(reCatchall.match(s)) #and not reEmail.match(s)
-
 reDomain = re.compile(
     """
     ^(\*\.)?         # optionally start wildcard
@@ -30,7 +24,7 @@ class Domain(Strongbox):
     rectype = attr(str, okay=["a","cname","friend"], default="a")
     location = attr(str, default="",
                     okay=lambda s: (not s) or reDomain.match(s.lower()))
-    mailto = attr(str, default='~', okay=lambda s: valid_catchall(s))
+    mailto = attr(str, default=EmailRule.BOUNCE)
     processmail = attr(int, okay=[0,1], default=1)
     rules = linkset(EmailRule, "domain")
     dnsrecs = linkset(DNSRec, "domain")
@@ -56,8 +50,20 @@ class Domain(Strongbox):
         if reDomain.match(value):
             self.private.domain = value.lower()
         else:
-            raise ValueError, "invalid domain: %s" % value
+            raise ValueError("invalid domain: %s" % value)
         self.onSet("domain", value)
+
+    def set_mailto(self, value):
+        """
+        allow rewrite rules for sendmail but NOT normal forwards.
+        """
+        if reCatchall.match(value):
+            if reEmail.match(value):
+                pass # raise ValueError("catchall", "Forwarding is prohibited.")
+            self.private.mailto = value
+            self.onSet("mailto", value)
+        else:
+            raise ValueError("catchall", "invalid catchall: %s" % value)
 
     def get_is_site(self):
         return (self.site is not None) and (self.site.domain is self)

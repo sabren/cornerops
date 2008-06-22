@@ -1,6 +1,6 @@
 __ver__="$Id: DomainTest.py,v 1.11 2004/11/26 13:02:01 sabren Exp $"
 import unittest
-from cornerhost import Domain, Site
+from cornerhost import Domain, Site, EmailRule
 
 class DomainTest(unittest.TestCase):
 
@@ -52,7 +52,16 @@ class DomainTest(unittest.TestCase):
         except ValueError:
             pass
 
+    def test_default(self):
+        d = Domain()
+        assert d.mailto == EmailRule.BOUNCE
 
     def test_mailto(self):
         self.assertRaises(ValueError, Domain, mailto="e@p")
+
+        # forward is only okay if it contains %1
+        Domain(mailto="abc%1@other.com") # fine
+        #@TODO: self.assertRaises(ValueError, Domain, mailto="abc@other.com")
+
+
         

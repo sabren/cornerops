@@ -31,6 +31,8 @@ class SaveRuleFeature(EmailFeature):
             msg = "invalid mailbox name: %s" % value 
         elif field=="dupe":
             msg = "there is already a rule for %s" % value
+        elif field=="catchall":
+            msg = value
         else:
             msg = "invalid forwarding address"
         return msg

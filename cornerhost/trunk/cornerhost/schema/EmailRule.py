@@ -16,7 +16,9 @@ reEmailRule = "^%s$" % "|".join([reDefault, reBounce, rePopBox, reForward, reAli
 
 
 class EmailRule(Strongbox):
-    BOUNCE = "error:nouser"
+    BOUNCE  = reBounce
+    DEFAULT = reDefault
+    
     ID = attr(long)
     # http://www.remote.org/jochen/mail/info/chars.html
     virtuser = attr(str, okay=r"^(\.?[\+\-A-Za-z0-9_]+)*$", )

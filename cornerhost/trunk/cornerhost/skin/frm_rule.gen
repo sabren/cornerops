@@ -3,12 +3,12 @@
   from cornerhost import EmailRule, Domain
   from cornerhost.safety import safeDomain, safeEmailRule
   from strongbox import BoxView
+
+  # @TODO: there's a lot of overlap with frm_catchall
+  # They WERE in the same file, but the code was getting
+  # very messy from all the conditionals. See if there's
+  # something like inheritence in Genshi.
   
-  """
-  @TODO: clean this up!
-  it's ugly because the same template
-  is being used for both add_rule, edit_rule, and edit_catchall.
-  """
   domName = req.get('domName')
   assert domName, "domName parameter is required"
 
@@ -18,26 +18,11 @@
   except LookupError:
       raise AssertionError("domain %s not found." % domName)
 
-  # ugh. this is a kludge
-  # the situation is this: if you add a new rule, 
-  # and no mailbox name is given, it gives an
-  # error and re-shows the form. but both the
-  # catchall and normal rule commands use this
-  # form.
-  #
-  # Error can also happen if forward is set to
-  # someone@else.com or an invalid address.
-  #
-  # I think the real fix is to break this into
-  # two completely separate forms, possibly with
-  # a common central widget in an include file.
-
   rule = EmailRule(domain=d, mailto=d.mailto)
 
   reqAction = req.get("action")
   
   if reqAction in ('edit_rule', 'save rule'):
-      what = 'rule'
       action ='save rule'
       if error:
           # if what we are trying to save is bad
@@ -51,17 +36,11 @@
           rule = safeEmailRule(d, ov)
           
   elif reqAction == 'save new rule':
-      what = 'rule'
       action = 'save new rule'
       rule.mailto = '~'
       
   elif reqAction == 'add_rule':
-      what = 'rule'
       action ='save new rule'
-
-  else:
-      what = 'catchall'
-      action = 'save catchall'
     
   boxes = [BoxView(b) for b in  user.boxes]
 
@@ -75,27 +54,23 @@
 <div py:match="content">
 
 <form action="user.app" method="post">
-  ${Markup(html.hidden("domName", domName))}
-  
-  <py:if test="rule.ID or what=='catchall'">
+
+  <py:if test="rule.ID">
     <h2>edit this rule</h2>
   </py:if>
-  <py:if test="not(rule.ID or what=='catchall')">
+  <py:if test="not(rule.ID)">
     <h2>new email rule</h2>
   </py:if>
 
-  <py:if test="what=='rule'">
-    <p>Mail for 
+  <p>Mail for 
     ${Markup(html.text("virtuser", rule.virtuser or req.get("virtuser"),
                        'ID="virtuser" style="text-align:right"'))}@${domName} 
     should:</p>
-  </py:if>
-  <py:if test="what=='catchall'">
-    <p>By default, mail for <b>${domName}</b> should:</p>
-  </py:if>
   
   <div style="padding-left: 10px">
-    ${Markup(html.radio("rule", rule.mailto=="~", "main", 'ID="rule"'))}
+    ${Markup(html.hidden("domName", domName))}
+
+    ${Markup(html.radio("rule", rule.mailto=="~", "main"))}
     go into your main cornerhost mailbox (<em>${user.username}</em>)<br/>
     
     <py:for each="b in boxes">
@@ -110,27 +85,19 @@
     bounce with a "no such user" message
   </div>
   
-  <p></p>
-
-  <input type="submit" name="action" value="${action}"/>
-  
-  <py:if test="rule.ID and (what!='catchall')">
-    ${Markup(html.hidden("ID", rule.ID))}
-    <input style="margin-left: 20px" type="submit" name="action" value="delete rule"/>
-    ${Markup(html.hidden("oldDom", rule.domain.domain))}
-  </py:if>
+  <p><input type="submit" name="action" value="${action}"/>
+     <py:if test="rule.ID">
+       ${Markup(html.hidden("ID", rule.ID))}
+       <input style="margin-left: 20px" type="submit" name="action" value="delete rule"/>
+       ${Markup(html.hidden("oldDom", rule.domain.domain))}
+     </py:if>
+  </p>
   
 </form>
 
-
-<script language="javascript">
-  <py:if test="what=='catchall'">
-    document.getElementById("rule").focus();
-  </py:if>
-  <py:if test="what!='catchall'">
+<script type="text/javascript">
     document.getElementById("virtuser").focus();
     document.getElementById("virtuser").select();
-  </py:if>
 </script>
 
 </div>

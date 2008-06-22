@@ -4,6 +4,10 @@ from cornerhost.schema import EmailRule
 
 class EmailRuleTest(unittest.TestCase):
 
+    def test_defaults(self):
+        e = EmailRule()
+        assert e.mailto == EmailRule.DEFAULT == "~"
+
     def test_regexp(self):
         """
         There's a list of valid email characters here, based
