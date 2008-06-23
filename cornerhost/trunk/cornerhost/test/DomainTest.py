@@ -60,8 +60,12 @@ class DomainTest(unittest.TestCase):
         self.assertRaises(ValueError, Domain, mailto="e@p")
 
         # forward is only okay if it contains %1
-        Domain(mailto="abc%1@other.com") # fine
-        #@TODO: self.assertRaises(ValueError, Domain, mailto="abc@other.com")
 
-
+        # these should be okay:
+        Domain(mailto="%1@other.com")
+        Domain(mailto="abc%1@other.com")
         
+        # regression test: the extra dot raised ValueError at one point
+        Domain(mailto="%1@other.co.uk")
+
+        #@TODO: self.assertRaises(ValueError, Domain, mailto="abc@other.com")

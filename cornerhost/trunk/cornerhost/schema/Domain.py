@@ -6,7 +6,7 @@ from strongbox import *
 
 from EmailRule import reDefault, reBounce, rePopBox
 from pytypes import EmailAddress
-reRewrite = r"(%1|%2|%3|\w|-|\+)+(\.|%1|%2|%3|\w|-|\+)*@(\w|-)+(\.(\w|-)+)"
+reRewrite = r"(%1|%2|%3|\w|-|\+)+(\.|%1|%2|%3|\w|-|\+)*@(\w|-)+(\.(\w|-)+)+"
 reCatchall  = re.compile("^%s$" % "|".join([reDefault, reBounce, rePopBox, reRewrite]))
 reEmail = re.compile(EmailAddress.regex)
 
