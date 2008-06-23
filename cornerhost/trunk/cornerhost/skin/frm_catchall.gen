@@ -7,20 +7,19 @@
   domName = req.get('domName')
   assert domName, "domName parameter is required"
 
-  d = Domain(domName)
+  dom = Domain(domName)
   try:
-      d = safeDomain(user, domName)
+      dom = safeDomain(user, domName)
   except LookupError:
       raise AssertionError("domain %s not found." % domName)
 
-  rule = EmailRule(domain=d, mailto=d.mailto)
   boxes = [BoxView(b) for b in  user.boxes]
 
-  newmailto = rule.mailto or ''
-  if "%" not in rule.mailto:
+  newmailto = dom.mailto or ''
+  if "%" not in dom.mailto:
       newmailto = ''
 
-  isForward = "@" in rule.mailto and not "%" in rule.mailto
+  isForward = "@" in dom.mailto and not "%" in dom.mailto
 ?>
 <html py:strip="True"
       xmlns:py="http://genshi.edgewall.org/" 
@@ -37,24 +36,24 @@
 
     ${Markup(html.hidden("domName", domName))}
 
-    ${Markup(html.radio("rule", rule.mailto==EmailRule.BOUNCE, "bounce"))}
+    ${Markup(html.radio("rule", dom.mailto==EmailRule.BOUNCE, "bounce"))}
     bounce with a "no such user" message <strong>(recommended)</strong><br/>
 
-    ${Markup(html.radio("rule", rule.mailto=="~", "main", 'ID="rule"'))}
+    ${Markup(html.radio("rule", dom.mailto=="~", "main", 'ID="rule"'))}
     go into your main cornerhost mailbox (<em>${user.username}</em>)<br/>
     
     <py:for each="b in boxes">
-      ${Markup(html.radio("rule", rule.mailto==b.mailbox, b.mailbox))}
+      ${Markup(html.radio("rule", dom.mailto==b.mailbox, b.mailbox))}
       go into mailbox: ${b.mailbox}<br/>
     </py:for>
 
     <py:if test="isForward">
     <p style="border: solid red 2px; background-color: #f99; 
               margin-top: 4px; margin-bottom:4px;">
-    forward to ${rule.mailto} <strong>(please change this)</strong></p>
+    forward to ${dom.mailto} <strong>(please change this)</strong></p>
     </py:if>
 
-    ${Markup(html.radio("rule", "%" in rule.mailto, "mapto", 'ID="mapto"'))}
+    ${Markup(html.radio("rule", "%" in dom.mailto, "mapto", 'ID="mapto"'))}
     map to: ${Markup(html.text("mailto", newmailto, 
               'onFocus="document.getElementById(' + "'mapto'" + ').checked=true"'))}
     (see below)<br/>
