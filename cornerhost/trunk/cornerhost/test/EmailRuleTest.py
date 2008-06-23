@@ -76,6 +76,9 @@ class EmailRuleTest(unittest.TestCase):
         EmailRule(mailto='alias_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
         # and then this failed!!
         EmailRule(mailto='aaa.bbb@ccc.ddd')
+
+        # another regression test (because of the +)
+        EmailRule(mailto='a.b+c@e.d')
             
 
 

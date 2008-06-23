@@ -65,7 +65,8 @@ class DomainTest(unittest.TestCase):
         Domain(mailto="%1@other.com")
         Domain(mailto="abc%1@other.com")
         
-        # regression test: the extra dot raised ValueError at one point
+        # regression tests: 
         Domain(mailto="%1@other.co.uk")
+        Domain(mailto="%1+xxx@other.co.uk")
 
         #@TODO: self.assertRaises(ValueError, Domain, mailto="abc@other.com")
