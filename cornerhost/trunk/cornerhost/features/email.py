@@ -43,7 +43,7 @@ class SaveRuleFeature(EmailFeature):
             return EmailRule.BOUNCE
         elif rule=="main":
             return "~"
-        elif rule=="forward":
+        elif rule in ["mapto", "forward"]:
             if mailto=="someone@else.com":
                 raise ValueError('forwarding address', 'enter a real address')
             else:

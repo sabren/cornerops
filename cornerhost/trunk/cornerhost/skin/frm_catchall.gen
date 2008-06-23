@@ -17,8 +17,10 @@
   boxes = [BoxView(b) for b in  user.boxes]
 
   newmailto = rule.mailto or ''
-  if "@" not in rule.mailto:
+  if "%" not in rule.mailto:
       newmailto = ''
+
+  isForward = "@" in rule.mailto and not "%" in rule.mailto
 ?>
 <html py:strip="True"
       xmlns:py="http://genshi.edgewall.org/" 
@@ -45,9 +47,17 @@
       ${Markup(html.radio("rule", rule.mailto==b.mailbox, b.mailbox))}
       go into mailbox: ${b.mailbox}<br/>
     </py:for>
-        
-    ${Markup(html.radio("rule", "@" in rule.mailto, "forward"))}
-    map to: ${Markup(html.text("mailto", newmailto))} (see below)<br/>
+
+    <py:if test="isForward">
+    <p style="border: solid red 2px; background-color: #f99; 
+              margin-top: 4px; margin-bottom:4px;">
+    forward to ${rule.mailto} <strong>(please change this)</strong></p>
+    </py:if>
+
+    ${Markup(html.radio("rule", "%" in rule.mailto, "mapto", 'ID="mapto"'))}
+    map to: ${Markup(html.text("mailto", newmailto, 
+              'onFocus="document.getElementById(' + "'mapto'" + ').checked=true"'))}
+    (see below)<br/>
 
   </div>
   
@@ -67,6 +77,7 @@
 
 <p><br/></p>
 
+<py:def function="catchallNotice()">
 <p><strong>Catchall forwarding is prohibited.</strong></p>
 
 <p>Sadly, many ISPs make no distinction between forwarding spam
@@ -75,6 +86,15 @@
    longer allowed.</p>
 
 <p>You may still add rules to forward specific addresses.</p>
+</py:def>
+
+<py:if test="isForward">
+<div style="background: #f99; color: black; border: solid red 2px;">${catchallNotice()}</div>
+</py:if>
+<py:if test="not isForward">
+${catchallNotice()}
+</py:if>
+
 
 <p><br/></p>
 
