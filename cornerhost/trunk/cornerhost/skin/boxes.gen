@@ -44,7 +44,7 @@ boxes.sort(lambda a,b: cmp(a.mailbox, b.mailbox))
 		</li>
 	      </py:if>
 	      <py:if test="r.virtuser != '(catchall)'">
-		<li><a href="user.app?action=edit_rule&amp;virtuser=${virtuser}&amp;domName=${r.domain.domain}"
+		<li><a href="user.app?action=edit_rule&amp;virtuser=${r.virtuser}&amp;domName=${r.domain.domain}"
 		       >${r.virtuser}@${r.domain.domain}</a></li>
 	      </py:if>
 	    </py:for>
