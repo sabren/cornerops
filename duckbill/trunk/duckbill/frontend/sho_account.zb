@@ -138,7 +138,9 @@ autobill: {:bool(autobill):}
           <td><a href="index.py?action=edit&what=event&ID={:ID:}"
               ><b>&nbsp;{:event:}&nbsp;</b></a></td>
           <td width="*">{:note:}
-          * if refnum:
+          * if (refnum) and (source=='paypal'):
+              (<a href="https://www.paypal.com/us/vst/id={:refnum:}">{:refnum:}</a>)
+          * ef refnum:
               ({:refnum:})
           </td>
           <td align="right">{:sign:}{:amount:}</td>
