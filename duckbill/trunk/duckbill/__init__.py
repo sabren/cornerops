@@ -6,10 +6,11 @@ __release__="0.1"
 
 from pytypes import Date, DateTime
 
-TODAY = "today"
-NOW = "now"
+TODAY = Date("today")
+NOW = DateTime("now")
 
 from Event import Event
+from Grace import Grace
 from Cyclic import Cyclic
 from EncryptedCard import EncryptedCard
 from Subscription import Subscription

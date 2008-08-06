@@ -62,6 +62,21 @@ CREATE TABLE bill_event (
   PRIMARY KEY  (ID)
 );
 
+
+--
+-- Table structure for table bill_grace
+--
+
+
+CREATE TABLE bill_grace (
+  ID int(11) NOT NULL PRIMARY KEY auto_increment,
+  accountID int(11) UNIQUE NOT NULL default '0',
+  expires datetime default NULL,
+  reason varchar(255) default NULL
+);
+
+
+
 --
 -- Table structure for table bill_subscription
 --

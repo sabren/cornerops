@@ -21,7 +21,7 @@ class FrontEndAppTest(unittest.TestCase):
         self.app.debug = 1
 
 
-    def check_createAccount(self):
+    def test_createAccount(self):
         # test to expose a bug... all this SHOULD do is show a form..
         #@TODO: will need to clean this up once weblib refactoring is done
         REQ = weblib.RequestBuilder().build(
@@ -32,6 +32,35 @@ class FrontEndAppTest(unittest.TestCase):
         content = None)
         app = duckbill.FrontEndApp(self.clerk, REQ)
         app.act()
+
+
+    def test_closeAccount(self):
+        acc = duckbill.Account(account="ftempy")
+        acc.subscriptions << duckbill.Subscription()
+        acc = self.clerk.store(acc)
+        accID = acc.ID
+
+        assert acc.status=='active'
+
+        REQ = weblib.RequestBuilder().build(
+            method="POST",
+            querystring="",
+            form = {'action':'close_account', 'reason':'xxx', 'ID':str(accID)},
+            cookie = {},
+        content = None)
+
+        
+        app = duckbill.FrontEndApp(self.clerk, REQ)
+        self.assertRaises(weblib.Redirect, app.act)
+
+        self.assertEquals('closed',acc.status, 'dig nibbit?')
+
+        all = self.clerk.match(duckbill.Account)
+        assert len(all) == 1, all
+        
+        acc = all[0]
+        self.assertEquals('closed',acc.status, 'dag nabbit!')
+        self.assertEquals('closed',acc.subscriptions[0].status)
     
     def tearDown(self):
         os.chdir("..")

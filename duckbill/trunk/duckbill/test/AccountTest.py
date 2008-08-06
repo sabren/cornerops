@@ -6,7 +6,7 @@ __ver__="$Id: AccountTest.py,v 1.13 2006/07/02 06:08:09 sabren Exp $"
 import unittest
 import duckbill
 from duckbill.test import fakeAccount
-from duckbill import Account, Event, Subscription
+from duckbill import Account, Event, Subscription, Grace
 from pytypes import Date
 
 class AccountTest(unittest.TestCase):
@@ -149,6 +149,16 @@ class AccountTest(unittest.TestCase):
         evt = acc.events[-1]
         assert evt.event == "close"
         assert evt.note == "closed for nonpayment"
+
+
+    def test_grace(self):
+        acc = Account()
+        assert not acc.graced
+        acc.grace(why="just because", untilWhen=duckbill.TODAY+7)
+        assert acc.graced
+        acc.gracePeriods[0].expires = duckbill.TODAY
+        assert not acc.graced
+        
         
 if __name__=="__main__":
     unittest.main()

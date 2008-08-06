@@ -28,7 +28,9 @@
 email: <a href="mailto:{:email:}">{:email:}</a><br/>
 tel: {:phone:}<br/>
 statements: {:statementStrategy:}<br/>
-autobill: {:bool(autobill):}
+autobill: {:bool(autobill):}<br/>
+* if graced:
+    {:'<br/>'.join('<em>%s</em>' % g for g in graced):}
 </td></tr>
 
 * if status != 'closed':
@@ -37,6 +39,19 @@ autobill: {:bool(autobill):}
     <input type="hidden" name="action" value="close_account">
     <input type="hidden" name="ID" value="{:ID:}">
     [0] <b>close:</b> <input accesskey="0" type="text" name="reason"> 
+    <input type="submit" value="go">
+    </form>
+    </td></tr>
+
+* if not graced:
+    <tr><td>
+    <form action="index.py" method="post">
+    <input type="hidden" name="action" value="grace">
+    <input type="hidden" name="accountID" value="{:ID:}">
+    * exec:
+        until = Date("today")+14
+    <b>grace:</b> until: <input type="text" name="expires" size="9" value="{:until:}">
+    because: <input accesskey="0" type="text" name="note">
     <input type="submit" value="go">
     </form>
     </td></tr>

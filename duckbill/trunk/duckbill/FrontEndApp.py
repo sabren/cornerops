@@ -1,6 +1,7 @@
 """
 Front end for duckbill
 """
+from __future__ import with_statement
 __ver__="$Id: FrontEndApp.py,v 1.30 2007/03/30 00:35:53 sabren Exp $"
 
 import duckbill
@@ -8,6 +9,9 @@ import sixthday
 import zebra
 import weblib
 from duckbill import Account, Event, Subscription
+from contextlib import contextmanager
+
+
 
 class FrontEndApp(sixthday.AdminApp):
 
@@ -91,31 +95,40 @@ class FrontEndApp(sixthday.AdminApp):
         self.redirect("index.py?action=show&what=account&ID=%i"
                       % int(acct.ID))
 
+    @contextmanager
+    def accountUpdate(self, paramName="accountID"):
+        try:
+            assert self.input.get(paramName), "give me an accountID"
+            acc = self.clerk.fetch(Account, ID=int(self.input[paramName]))
+            yield acc
+        except:
+            raise
+        else:
+            acc = self.clerk.store(acc)
+            self.redirect("index.py?action=show&what=account&ID=%i"
+                          % int(acc.ID))
+
     def act_close_account(self):
-        assert self.input.get("ID"), "give me an accountID"
         assert self.input.get("reason"), "give me a reason"
-        acct = self.clerk.fetch(Account, ID=self.input["ID"])
-        acct.close(self.input["reason"])
-        self.clerk.store(acct)
-        self.redirect("index.py?action=show&what=account&ID=%i"
-                      % int(acct.ID))
+        with self.accountUpdate(paramName='ID') as acc:
+            acc.close(self.input["reason"])
+            assert acc.status == 'closed', "??!"
 
     def act_catchup(self):
-        acct = self.clerk.fetch(Account, ID=self.input["accountID"])
-        acct.postCharges()
-        self.clerk.store(acct)
-        self.redirect("index.py?action=show&what=account&ID=%i"
-                      % int(acct.ID))
-
+        with self.accountUpdate() as acc:
+            acc.postCharges()
 
     def act_stop_autobill(self):
-        acct = self.clerk.fetch(Account, ID=self.input["accountID"])
-        acct.lastfour=''
-        acct.cardinfo=None
-        acct.autobill=False
-        self.clerk.store(acct)
-        self.redirect("index.py?action=show&what=account&ID=%i"
-                      % int(acct.ID))
+        with self.accountUpdate() as acc:
+            acc.postCharges()
+            acc.lastfour=''
+            acc.cardinfo=None
+            acc.autobill=False
+
+    def act_grace(self):
+        with self.accountUpdate() as acc:
+            acc.grace(why=self.input['note'], untilWhen=self.input['expires'])
+
 
     ### subscriptions ############################################
 

@@ -13,6 +13,8 @@ schema = Schema({
     #Customer: "bill_customer",
     #Customer.accounts: (Account, "customerID"),
     Account: "bill_account",
+    Grace: "bill_grace",
+    Grace.account: "accountID",
     Subscription: "bill_subscription",
     Subscription.account: "accountID",
     Event: "bill_event",

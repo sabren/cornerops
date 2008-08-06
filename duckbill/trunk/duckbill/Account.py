@@ -1,16 +1,12 @@
 import duckbill
 import zebra
 from duckbill import Cyclic
-from duckbill import Event
-from duckbill import Statement
-from duckbill import Subscription
+from duckbill import Event, Grace, Statement, Subscription
 from duckbill import EncryptedCard
 from pytypes import Date, DateTime
 from pytypes import FixedPoint
 from handy import sendmail
-from strongbox import attr
-from strongbox import linkset
-from strongbox import Strongbox
+from strongbox import attr, link, linkset, Strongbox
 
 class Account(Cyclic):
     """
@@ -30,7 +26,7 @@ class Account(Cyclic):
     address1 = attr(unicode, default="")
     address2 = attr(unicode, default="")
     city = attr(unicode, default="")
-    state = attr(str, default="")
+    state = attr(unicode, default="")
     postal = attr(str, default="")
     countryCD = attr(str, default="")
     account = attr(str, default="")
@@ -45,9 +41,23 @@ class Account(Cyclic):
     status = attr(str, default='active',
                   okay=['active','warned','locked','closed','comped',"lifer"])
     warned = attr(Date)
-    
+
     subscriptions = linkset(Subscription, "account")
     events = linkset(Event, "account")
+
+    # @TODO: making gracePeriod a link breaks FrontEndAppTest.test_closeAccount!!
+    # For some reason, Clerk just doesn't handle 1-1 relations well. :(
+    # perhaps because the column in the schema dict is "ID" and that causes
+    # clerk to remove it from the data it sends to storage.store() ?
+    # (it was triggering an insert instead of an update, but ONLY
+    # after acc.close())
+    gracePeriods = linkset(Grace, "account")
+    
+    def get_graced(self):
+        return [g for g in self.gracePeriods if not g.hasExpired()]
+
+    def grace(self, why, untilWhen):
+        self.gracePeriods << Grace(reason=why, expires=untilWhen)
 
     def onCatchup(self, wasDue):
         """
@@ -173,6 +183,3 @@ class Account(Cyclic):
         for s in self.subscriptions:
             s.close()
         self.events << Event(event="close", note=why)
-
-
-    
