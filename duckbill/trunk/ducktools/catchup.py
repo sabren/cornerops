@@ -52,6 +52,7 @@ def sendStatement(acc):
     #    fname = acc.company
     pastDue = acc.amountPastDue(lastDue)
     brand = acc.brand.title().replace('Dcd', 'DCD')
+    if brand == 'DCD hosting': pastDue = None # TODO: fix this!
     header =[trim(
         """
         From: %(fromAddr)s
@@ -71,7 +72,7 @@ def sendStatement(acc):
         if pastDue:
             grand_msg = trim(
                 """
-                You owe $%s.
+                Amount Due: $%s.
 
                 ** NOTE: YOUR ACCOUNT IS PAST DUE.
                 ** PLEASE PAY YOUR BILL IMMEDIATELY.
@@ -80,7 +81,7 @@ def sendStatement(acc):
         elif acc.autobill and acc.lastfour:
             grand_msg = trim(
                 """
-                Your current balance is $%s.
+                Amount Due: $%s.
 
                 This amount will be charged to your credit
                 card after 48 hours. The card we have on
@@ -90,7 +91,7 @@ def sendStatement(acc):
         else:
             grand_msg = trim(
                 """
-                Your current balance is $%s.
+                Amount Due: $%s.
 
                 Please pay this amount by %s.
 
@@ -98,7 +99,7 @@ def sendStatement(acc):
 
         ## now cap it off:
         brand = acc.brand
-        if brand == 'dcd hosting': brand='cornerhost'
+        if brand == 'DCD hosting': brand='cornerhost'
         grand_msg += trim(
             """
             You may pay via credit card, PayPal, check
@@ -172,4 +173,3 @@ if __name__=="__main__":
             sendStatement(acc)
             # only store changes once bill is sent:
             CLERK.store(acc)
-

@@ -47,7 +47,6 @@ def decrypt(acc):
                 print "nope."
     else:
         print "no cardinfo for account %s" % acc.account
-        sys.exit()
 
 
 def getDecryptedAccount(username):

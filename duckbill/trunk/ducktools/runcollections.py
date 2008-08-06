@@ -16,23 +16,18 @@ from cornerhost import User
 from cornerhost import config
 uclerk = config.makeClerk()
 
+#@TODO: get rid of this completely (use duckbill.Grace instead)
+# (this is just a hard-coded list)
 try:
     from graced import GRACED, gracedUntil
 except Exception, e:
-    print e
-    print 
-    print "create a graced.py that defines GRACED and gracedUntil"
-    print "it should look like this:"
-    print
-    print "from pytypes import Date"
-    print "graced = ['list','of','usernames']"
-    print "gracedUntil = [('username',Date('20yy/mm/dd'))]"
-    sys.exit()
+    GRACED = []
+    gracedUntil = []
 
 for who, until in gracedUntil:
     if Date("today") <= until:
         GRACED.append(who)
-    
+
 
 try:
     PASTDUE_MAIL_TEMPLATE = open("pastdue.msg").read()
@@ -52,9 +47,7 @@ if __name__=="__main__":
     boxes_to_restart = {}
 
     for acc in r.dueAccounts():
-        if acc.account in GRACED:
-            continue
-        if acc.brand.lower().startswith('dcd'):
+        if (acc.account in GRACED) or (acc.graced):
             continue
         
         # still here, so:
