@@ -4,6 +4,7 @@ test cases for Statement
 __ver__="$Id: StatementTest.py,v 1.5 2002/05/28 07:30:40 sabren Exp $"
 
 import unittest
+import duckbill
 from duckbill import Statement
 from duckbill import Event
 from pytypes import DateTime
@@ -21,8 +22,7 @@ class StatementTest(unittest.TestCase):
         
     # both of these work the same way. real magic is in
     # account.balance()
-    def check_closeBalance(self): pass
-    def check_openBalance(self):
+    def test_openBalance(self):
 
         assert Statement(self.acc).openBal == 0
         assert Statement(self.acc).closeBal == 0
@@ -34,5 +34,3 @@ class StatementTest(unittest.TestCase):
                 % Statement(self.acc, end=Date("today")+1).closeBal
 
 
-    def check_events(self):
-        pass # this just calls account.eventsBetween(start, end)

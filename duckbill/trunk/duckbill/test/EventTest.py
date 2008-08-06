@@ -13,7 +13,7 @@ class EventTest(unittest.TestCase):
     def setUp(self):
         pass
 
-    def check_amount(self):
+    def test_amount(self):
         """
         amount should always be a fixedpoint or None
         """
@@ -22,7 +22,7 @@ class EventTest(unittest.TestCase):
         assert e.amount is None # make sure no error trying FixedPoint(None)
         e.amount = 1
 
-    def check_NoneAmount(self):
+    def test_NoneAmount(self):
         e = Event()
         e.amount = None
         assert e.value == 0
