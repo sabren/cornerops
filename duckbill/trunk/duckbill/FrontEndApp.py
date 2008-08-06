@@ -108,6 +108,15 @@ class FrontEndApp(sixthday.AdminApp):
                       % int(acct.ID))
 
 
+    def act_stop_autobill(self):
+        acct = self.clerk.fetch(Account, ID=self.input["accountID"])
+        acct.lastfour=''
+        acct.cardinfo=None
+        acct.autobill=False
+        self.clerk.store(acct)
+        self.redirect("index.py?action=show&what=account&ID=%i"
+                      % int(acct.ID))
+
     ### subscriptions ############################################
 
 

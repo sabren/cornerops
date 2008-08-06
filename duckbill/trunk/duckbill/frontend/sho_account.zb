@@ -41,6 +41,16 @@ autobill: {:bool(autobill):}
     </form>
     </td></tr>
 
+* if bool(autobill):
+    <tr><td>
+    <form action="index.py" method="post">
+    <input type="hidden" name="action" value="stop_autobill">
+    <input type="hidden" name="accountID" value="{:ID:}">
+    <input type="submit" value="stop autobill">
+    </form>
+    </td></tr>
+
+
 <tr><td colspan="2">opened: {:opened:} </td></tr>
 <tr><td colspan="2">nextDue: {:nextDue:}</td></tr>
 
