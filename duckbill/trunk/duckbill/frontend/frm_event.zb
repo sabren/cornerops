@@ -6,7 +6,7 @@
     if not scope.get("accountID"):
         scope["accountID"] = account.ID
     
-<form action="index.py" method="post" style="width:50%; float: left;">
+<form action="index.py" method="post" style="width:50%">
 {:html.hidden("what", "event"):}
 {:html.hidden("accountID", accountID):}
 
@@ -60,8 +60,13 @@
 
 </table>
 <input type="submit" name="action" value="save">
-&nbsp;&nbsp;&nbsp;
-<button onclick="document.location='index.py?action=show&what=account&ID={:accountID:}'">back to account</button>
+</form>
+
+<form style="position:relative; top:-37px; left: 65px;" action="index.py" method="GET">
+<input type="hidden" name="action" value="show"/>
+<input type="hidden" name="what" value="account"/>
+<input type="hidden" name="ID" value="{:account.ID:}"/>
+<input type="submit" value="back to account"/>
 </form>
 
 * if event=='payment' and (account is not None):
