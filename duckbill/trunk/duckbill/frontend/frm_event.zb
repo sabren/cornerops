@@ -62,12 +62,13 @@
 <input type="submit" name="action" value="save">
 </form>
 
-<form style="position:relative; top:-37px; left: 65px;" action="index.py" method="GET">
-<input type="hidden" name="action" value="show"/>
-<input type="hidden" name="what" value="account"/>
-<input type="hidden" name="ID" value="{:account.ID:}"/>
-<input type="submit" value="back to account"/>
-</form>
+* if account is not None:
+    <form style="position:relative; top:-37px; left: 65px;" action="index.py" method="GET">
+    <input type="hidden" name="action" value="show"/>
+    <input type="hidden" name="what" value="account"/>
+    <input type="hidden" name="ID" value="{:account.ID:}"/>
+    <input type="submit" value="back to account"/>
+    </form>
 
 * if event=='payment' and (account is not None):
     <pre style="color: black; background: white; width: 50%">
