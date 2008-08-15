@@ -57,7 +57,7 @@ sites.sort(lambda a,b: cmp(a.domain.domain, b.domain.domain))
 	    [<a href="analog/${user.username}/${s.domain.domain}/analog.html">logs</a>]
 	  </td>
 	</tr>
-	<py:with vars="aliasNames=[a.domain for a in aliases if a.domain!=s.domain.domain]">
+	<py:with vars="aliasNames=[a.domain for a in s.aliases if a.domain!=s.domain.domain]">
 	  <py:if test="aliasNames">
 	    <tr>
 	      <td colspan="2" style="padding-left:10px; font-size:smaller">

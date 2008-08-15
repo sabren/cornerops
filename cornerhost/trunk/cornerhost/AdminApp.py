@@ -27,4 +27,5 @@ class AdminApp(CornerApp):
         model["admin"] = self.isAdmin
         model["user"] = User(username="(admin)", plan=Plan(name="basic"))
         model["changed"] = req.get("changed", None)
+        model["jumpto"] = None
         return model

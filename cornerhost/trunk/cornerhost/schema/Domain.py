@@ -25,6 +25,7 @@ class Domain(Strongbox):
     location = attr(str, default="",
                     okay=lambda s: (not s) or reDomain.match(s.lower()))
     mailto = attr(str, default=EmailRule.BOUNCE)
+    meta = attr(str) # for odd dns, etc
     processmail = attr(int, okay=[0,1], default=1)
     rules = linkset(EmailRule, "domain")
     dnsrecs = linkset(DNSRec, "domain")

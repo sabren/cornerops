@@ -11,9 +11,6 @@ tcost = 0
 
 <h2>top 20 bandwidth hogs from yesterday</h2>
 
-
-<p>@TODO: this page doesn't seem to work with genshi. :(</p>
-
 <form action="admin.app" method="get">
   <input type="hidden" name="action" value="traffic"/>
   <py:if test="server != '%'">
@@ -28,22 +25,28 @@ tcost = 0
   <input type="submit" value="go"/>
 </form>
 
+<?python
+ttraf = 0 # total traffic
+?>
+
+<!-- @TODO: show accurate bandwidth costs (these were from old data center) -->
+
 <table cellspacing="0" cellpadding="2" width="500">
   <py:for each="e in hogs">
     <?python
-      dcost = ( e.traffic / 1000000000.0 * 3.5);
+      dcost = e['traffic'] / 1000000000.0 * 3.5
       mcost = dcost * 30
       tcost += dcost
-      ttraf += e.traffic
+      ttraf += e['traffic']
     ?>
     <tr>
       <td>${e.server}</td>
       <td><a href="admin.app?action=jump&amp;jumpto=${e.username}">${e.username}</a></td>
       <td>${e.plan}</td>
-      <td align="right">${readable(traffic)}</td>
+      <td align="right">${readable(e.traffic)}</td>
       <td align="right">=</td>
-      <td align="right">${ '%10.2f' % dcost }/d</td>
-      <td align="right">${ '%10.2f' % mcost }/m</td>
+      <td align="right"><!--${ '%10.2f' % dcost }/d--></td>
+      <td align="right"><!--${ '%10.2f' % mcost }/m--></td>
     </tr>
   </py:for>
   <tr>

@@ -15,7 +15,9 @@
 <h2>your dns records</h2>
   
 <table class="dns" cellspacing="0" cellpadding="2" style="width:100%;">
-  <tr><th>domain</th><th>type</th><th>target</th></tr>
+  <tr><th>domain</th><th>type</th><th>target</th>
+   <th py:if="admin">meta</th>
+  </tr>
   
   <py:for each="z in zones">
     <?python
@@ -39,6 +41,7 @@
 	<py:if test="z.location">${z.location}</py:if>
 	<py:if test="not z.location">(<em>${user.server.name}</em>)</py:if>
       </td>
+      <td py:if="admin">${z.meta}</td>
     </tr>
     
     <py:for each="sub in z.subs">
@@ -57,6 +60,7 @@
 	<td>
 	  ${sub.location}
 	</td>
+        <td py:if="admin"></td>
       </tr>
       <py:for each="rec in sub.dnsrecs">
 	<tr class="mx">
@@ -74,6 +78,7 @@
 	    <a href="user.app?action=edit_dns_txt&amp;domain=${sub.domain}&amp;ID=${rec.ID}"
 	       >${rec.value}</a>
 	  </td>
+          <td py:if="admin"></td>
 	</tr>
       </py:for>
     </py:for>
@@ -92,6 +97,7 @@
 	       >${rec.value}</a>
 	  </py:if>
 	</td>
+        <td py:if="admin"></td>
       </tr>
     </py:for>
   </py:for>

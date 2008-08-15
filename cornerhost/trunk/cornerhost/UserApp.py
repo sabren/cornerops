@@ -138,6 +138,7 @@ class UserApp(CornerApp):
         model["user"] = self.uclerk.user
         model["changed"] = req.get("changed", None)
         model["sess"] = self.sess
+        model["jumpto"] = None
         logging.debug("username is %s" % self.uclerk.user.username)
         logging.debug("model has: %s" % model.keys())
         return model

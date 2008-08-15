@@ -22,7 +22,7 @@ times. Here is the syntax and an example line: </p>
 
 <pre style="color:green">
 (min) (hour) (day of month) (month) (day of week) command
-30 5 */2 * *  nice $HOME/run_every_other_day_at_5_thirty_am.py
+30 5 */2 * *  nice $$HOME/run_every_other_day_at_5_thirty_am.py
 </pre>
 
 <p><b>Note:</b> Please avoid scheduling resource intensive scripts 
