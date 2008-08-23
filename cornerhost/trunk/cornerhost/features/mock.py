@@ -32,7 +32,7 @@ class MockMaker:
         self.expects = MockMethodMaker()
         
     def returns(self, result):
-        self.mock(result) = 5
+        self.mock(result) == 5
 
 
 
