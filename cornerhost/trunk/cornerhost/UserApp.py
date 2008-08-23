@@ -3,10 +3,16 @@ from cornerhost.grunts import UserClerk
 from cornerhost.features import panel, site, dns, email, remote, user
 import logging
 import platonic
+import tiles
 
 _ = panel.EmptyModel
 
 class CornerApp(platonic.App):
+
+    def __init__(self, default=None):
+        super(CornerApp, self).__init__(default)
+        self.tiles = tiles.makeUserWebMap()
+        
     # overrides to add uclerk
     def initFeature(self, f, action):
         return f(self.clerk) #, self.sess)

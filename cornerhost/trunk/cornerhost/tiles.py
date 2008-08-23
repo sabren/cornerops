@@ -1,17 +1,16 @@
 
-import genshi.template
+from genshi.template import TemplateLoader
 
 class SimpleTile:
     def render(self, model):
         return model.out
 
 class GenshiTile(SimpleTile):
-    path = "."
-    loader = None
+    loader = TemplateLoader(['../skin'], variable_lookup='lenient')
+
     def __init__(self, filename):
         self.filename = filename
-        if not self.loader:
-            GenshiTile.loader = genshi.template.TemplateLoader([self.path])
+
     def render(self, model):
         tpl = self.loader.load(self.filename)
         stream = tpl.generate(**model)

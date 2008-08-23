@@ -1,10 +1,7 @@
 # admin.app
 from cornerhost import AdminApp, User
-from cornerhost import tiles
 from cornerhost.tiles import GenshiTile
-GenshiTile.path = "../skin"
 app = AdminApp(CLERK, SESS)
-app.tiles = tiles.makeUserWebMap()
 app.tiles.update({
     "servers"      : lambda : GenshiTile("servers.gen"),
     "signups"      : lambda : GenshiTile("signups.gen"),
