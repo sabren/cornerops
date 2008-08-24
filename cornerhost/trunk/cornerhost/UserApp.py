@@ -1,43 +1,108 @@
-
 from cornerhost.grunts import UserClerk
 from cornerhost.features import panel, site, dns, email, remote, user
 import logging
-import platonic
+from platonic import AbstractApp
 import tiles
+import weblib
 
-_ = panel.EmptyModel
+class DictWrap:
+    """
+    missing values default to '0'
+    use case: checkbox values from a form going into
+    the redirect expression. eg: ?bool=%(bool)s
+    if bool is unchecked, then nothing gets passed in,
+    so a normal dict would raise a keyerror. instead,
+    this just returns a '0'...
 
-class CornerApp(platonic.App):
+    Ideally, the default would be '' or it would be
+    parsed from the __expected__ parameter, but
+    @TODO: the code that handles __expected__ is gone!
+
+    However, since this is currently only used for
+    checkboxes, it does the job...
+    """
+    def __init__(self, d):
+        self.d = d
+    def __getitem__(self, key):
+        return self.d.get(key, '0')
+
+
+class CornerApp(AbstractApp):
 
     def __init__(self, default=None):
-        super(CornerApp, self).__init__(default)
+        super(CornerApp, self).__init__()
         self.tiles = tiles.makeUserWebMap()
+        self.defaultAction = default
+        self.bounceTo = {} # where to go after intercept
+        self.success = {} # or after success
+        self.featureSet = {}
+
+
+    def buildFeature(self, req):
+        return self.featureFromAction(
+            req.get("action", self.defaultAction).replace(" ","_"))
+
+
+    def featureFromAction(self, action):
+        assert action in self.featureSet, "unknown action: %s" % action
+        feature = self.featureSet[action]
+        feature.action = action
+        return feature
+
         
-    # overrides to add uclerk
-    def initFeature(self, f, action):
-        return f(self.clerk) #, self.sess)
+    def invoke(self, req, res, feature, model=None):
 
-    def invokeFeature(self, f, req, res):
-        return f.handle(req, res, self.sess)
+        if model is None:
+            model = self.prepareModel(req)
+            
+        result = feature(self.clerk).handle(req, res, self.sess)
+        if result is None:
+            raise weblib.Redirect(self.success[feature.action] % DictWrap(req))
+        elif isinstance(result,dict) or isinstance(result, Model):
+            model.update(result)
+        else:
+            raise TypeError(
+                "result should be none or Model, not %s" % result)
 
-    def render(self, model, res, action):
-        res.write(self.tiles[action]().render(model))
+        return model
 
-    def addScreen(self, action, model=_):
-        self.featureSet[action] = model
 
-    def addCommand(self, action, command, onIntercept, onSuccess=None):
-        self.featureSet[action] = command
-        if onIntercept:
-            self.onIntercept(action, onIntercept)
-        self.onSuccess(action, onSuccess)
+    def prepareModel(self, req):
+        return {'req':req}
+
+
+    def render(self, req, res, feature, model):
+        res.write(self.tiles[feature.action]().render(model))
+
+
+    def whereToGoWhenIntercepted(self, action):
+        return self.bounceTo.get(action)
+
+
+    def onIntercept(self, req, res, feature, e):
+        "e= intercept; feature=the feature we were trying"
+        bounceTo = self.whereToGoWhenIntercepted(feature.action)
+        model = self.prepareModel(req)
+        model.update(e.data) # for {:error:}
+        feature2 = self.featureFromAction(bounceTo)
+        model.update(self.invoke(req, res, feature2, model))
+        self.render(req, res, feature2, model)
+
 
 class UserApp(CornerApp):
+
+    def addScreen(self, action, model=None):
+        self.featureSet[action] = model or panel.EmptyModel
+
+    def addCommand(self, action, command, onIntercept=None, onSuccess=None):
+        self.featureSet[action] = command
+        self.bounceTo[action] = onIntercept
+        self.success[action] = onSuccess
 
     def __init__(self, uobj, clerk, sess, isAdmin=False):
         super(UserApp, self).__init__(default="list_sites")
         
-        # @TODO: need self.clerk because CornerApp usese it. ugh :(
+        # @TODO: need self.clerk because CornerApp uses it. ugh :(
         self.clerk = self.uclerk = UserClerk(uobj, clerk)
         self.sess = sess
         self.isAdmin=isAdmin
