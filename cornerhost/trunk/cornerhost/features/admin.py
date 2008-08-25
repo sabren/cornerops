@@ -12,10 +12,7 @@ from cornerhost import NewSiteGrunt
 ## admin only ####################################
   
 class AdminFeature(ControlPanelFeature):
-    def __init__(self, clerk):
-        self.user = None
-        self.clerk = clerk
-
+    pass
 
 ## screens #######################################
         
@@ -201,9 +198,7 @@ class IsPasswdCommand(UserSpecific):
 
 
 def reverse(string):
-    chars = [c for c in string]
-    chars.reverse()
-    return "".join(chars)
+    return "".join(reversed(chars))
                    
 class UserDelCommand(UserSpecific):
     def invoke(self, _clerk, _sess, reversed):

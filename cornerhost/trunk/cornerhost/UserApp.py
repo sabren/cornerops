@@ -1,11 +1,12 @@
 from cornerhost.grunts import UserClerk
 from cornerhost.features import panel, site, dns, email, remote, user
 import logging
-from platonic import AbstractApp
+from platonic import AbstractApp, signature, first_match
 import tiles
 import weblib
 
 class DictWrap:
+    #@TODO: I *think* we can just use python's f(x=0) for this now.
     """
     missing values default to '0'
     use case: checkbox values from a form going into
@@ -29,13 +30,14 @@ class DictWrap:
 
 class CornerApp(AbstractApp):
 
-    def __init__(self, default=None):
+    def __init__(self, uclerk, default="list_sites"):
         super(CornerApp, self).__init__()
         self.tiles = tiles.makeUserWebMap()
         self.defaultAction = default
         self.bounceTo = {} # where to go after intercept
         self.success = {} # or after success
         self.featureSet = {}
+        self.uclerk = uclerk
 
 
     def buildFeature(self, req):
@@ -49,13 +51,35 @@ class CornerApp(AbstractApp):
         feature.action = action
         return feature
 
+
+    def specialArguments(self, req, res, **etc):
+        return {
+            "_req" : req ,
+            "_res" : res ,
+            "_sess": etc['_sess'],
+            "_user": etc['_user'],
+            "_clerk": etc['_clerk'],
+        }
+
         
     def invoke(self, req, res, feature, model=None):
 
         if model is None:
             model = self.prepareModel(req)
-            
-        result = feature(self.clerk).handle(req, res, self.sess)
+
+        special = {
+            '_req'  : req,
+            '_res'  : res,
+            '_sess' : self.sess,
+            '_user' : self.uclerk.user,
+            '_clerk': self.uclerk.clerk }
+        
+        f = feature().invoke
+        result = f(*self.buildArgs(f, special, req, res, self.sess))
+        
+        #@TODO: break this function into smaller pieces.
+        #@TODO: use something like a 'platonic request' for per-request data.
+
         if result is None:
             raise weblib.Redirect(self.success[feature.action] % DictWrap(req))
         elif isinstance(result,dict) or isinstance(result, Model):
@@ -75,16 +99,11 @@ class CornerApp(AbstractApp):
         res.write(self.tiles[feature.action]().render(model))
 
 
-    def whereToGoWhenIntercepted(self, action):
-        return self.bounceTo.get(action)
-
-
     def onIntercept(self, req, res, feature, e):
         "e= intercept; feature=the feature we were trying"
-        bounceTo = self.whereToGoWhenIntercepted(feature.action)
         model = self.prepareModel(req)
         model.update(e.data) # for {:error:}
-        feature2 = self.featureFromAction(bounceTo)
+        feature2 = self.featureFromAction(self.bounceTo[feature.action])
         model.update(self.invoke(req, res, feature2, model))
         self.render(req, res, feature2, model)
 
@@ -100,10 +119,9 @@ class UserApp(CornerApp):
         self.success[action] = onSuccess
 
     def __init__(self, uobj, clerk, sess, isAdmin=False):
-        super(UserApp, self).__init__(default="list_sites")
+        super(UserApp, self).__init__(UserClerk(uobj, clerk))
         
         # @TODO: need self.clerk because CornerApp uses it. ugh :(
-        self.clerk = self.uclerk = UserClerk(uobj, clerk)
         self.sess = sess
         self.isAdmin=isAdmin
 

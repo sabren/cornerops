@@ -5,8 +5,9 @@ from cornerhost.features.admin import *
 class AdminApp(CornerApp):
     
     def __init__(self, clerk, sess):
+        self.user = User(username="(admin)", plan=Plan(name="basic"))
+        super(AdminApp, self).__init__(UserClerk(self.user, clerk))
         self.tiles = {}
-        self.clerk = clerk
         self.sess = sess
         self.featureSet={}
         self.featureSet["servers"] = ServerScreen
@@ -25,7 +26,7 @@ class AdminApp(CornerApp):
         model = {}
         model["error"] = None
         model["admin"] = self.isAdmin
-        model["user"] = User(username="(admin)", plan=Plan(name="basic"))
+        model["user"] = self.user
         model["changed"] = req.get("changed", None)
         model["jumpto"] = None
         return model

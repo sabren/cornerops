@@ -23,6 +23,7 @@ class SaveDNSRecCommand(DNSFeature):
             
             if rec.domain is not dom:
                 dom.dnsrecs << rec
+
             rec.rectype = rectype
             rec.priority = priority # field might be disabled
             rec.value = value
