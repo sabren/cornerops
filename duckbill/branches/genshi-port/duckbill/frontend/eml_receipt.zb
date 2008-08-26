@@ -1,0 +1,18 @@
+From: receipt@sabren.com
+To: {:account.email:}
+Subject: Payment Received ({:posted.toSQL().split()[0]:}: ${:amount:})
+
+{:account.fname:},
+
+Thank you! Your payment of ${:amount:} USD was credited
+to your {:account.brand:} account [{:account.account:}] on {:posted.toSQL().split()[0]:}.
+
+Sincerely,
+
+Michal J Wallace
+Sabren Enterprises, Inc.
+-------------------------------------
+contact: michal@sabren.com
+hosting: http://www.cornerhost.com/
+my site: http://www.withoutane.com/
+-------------------------------------

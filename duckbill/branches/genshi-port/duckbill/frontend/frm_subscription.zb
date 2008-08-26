@@ -1,0 +1,65 @@
+* include dsp_head;
+* exec:
+    from duckbill import Subscription
+    from zebra import html
+    if not scope.get("accountID"):
+        scope["accountID"] = account.ID
+
+    
+<form action="index.py" method="POST">
+{:html.hidden("what","subscription"):}
+{:html.hidden("accountID", accountID):}
+
+* if ID:
+    <b>edit Subscription</b>
+    {:html.hidden("ID", ID):}
+* el:
+    <b>add new Subscription</b>
+
+<table>
+<tr>
+  <td>service</td>
+  <td>{:html.text("service", service):}</td>
+</tr>       
+<tr>
+  <td>username</td>
+  <td>{:html.text("username", username):}</td>
+</tr>       
+<tr>
+  <td>status:</td>
+  <td>{:html.select("status", Subscription.status.okay,  status):}</td>
+</tr>
+<tr>
+  <td>note</td>
+  <td>{:html.text("note", note):}</td>
+</tr>       
+<tr>
+  <td>rate</td>
+  <td>{:html.text("rate", rate):}</td>
+</tr>       
+<tr>
+  <td>cycLen</td>
+  <td>{:html.select("cycLen", ["month","year"], cycLen):}</td>
+</tr>       
+<tr>
+  <td>opened</td>
+  <td>{:html.text("opened", opened):}</td>
+</tr>       
+<tr>
+  <td>closed</td>
+  <td>{:html.text("closed", closed):}</td>
+</tr>       
+<tr>
+  <td>nextDue</td>
+  <td>{:html.text("nextDue", nextDue):}</td>
+</tr>
+</table>
+
+<input type="submit" name="action" value="save">
+&nbsp;&nbsp;&nbsp;
+<button onclick="document.location='index.py?action=show&what=account&ID={:accountID:}'">cancel</button>
+</form>
+
+<script language="javascript">
+  document.all['service'].focus();
+</script>

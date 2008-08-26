@@ -1,0 +1,236 @@
+
+* duckbill design doc
+
+-------------------------------------------------------------
+2007-07-31 status:
+
+This rough design document is at least 5 years old.
+Some of the classes have been moved around but the
+basic ideas in duckbill haven't changed *too* much.
+
+@TODO: rewrite this file with modern information.
+
+-------------------------------------------------------------
+
+* executive summary
+
+Duckbill tracks a financial picture of your business.
+It is not a complete accounting package. Rather, it 
+focuses on customers, sales, and receivables. It can
+also generate and send statements to your customers.
+
+
+* Scheduled "catchup" batch process
+
+The most important feature of duckbill is the "catchup"
+routine. Running catchup does the following:
+
+   - back-posts charges for subscriptions that have come due
+   - sends statements to customers that need them
+
+You run catchup at scheduled intervals. Billing cycles tend 
+to span days, weeks, and months, so there's usually no
+need to deal with billing on a second-by-second basis.
+
+Of course, the more often you run catchup, the more accurate
+your financial picture will be, until you reach a point of 
+diminishing returns. Running catchup once an hour or once a
+day should be sufficient for most businesses.
+
+* When is something due? (the Cyclic class)
+
+Two things have due dates: 
+    - accounts are due for statements
+    - subscriptions are due for charges
+
+Both are handled the same way:
+    - they have a nextDue date
+       - if nextDue is in future, we don't bill yet.
+       - if nextDue is null, we never bill.
+       - we usually want nextDue &lt;= now
+
+Since both have the same logic, both make use of a
+mixin class called Cyclic. Cyclic handles the work of
+deciding when things are due, updating the nextDue
+field, and calling onDue and onCatchup.
+
+* Cycles
+
+Since the cycle for posting charges can change, AND it can
+be shared by the statement cycle, we encapsulate it in a
+Cycle class.
+
+For now, there are two cycles: MonthlyCycle and YearlyCycle.
+
+----
+
+Early thinking behind this concept:
+
+<ul>
+<li>customers who pay for a year</li>
+<li>customers who pay for the month</li>
+<li>customers who have multiple subscriptions and pay for each differently</li>
+<li>resellers who have multiple accounts with multiple subscriptions each</li>
+<li>affilates who get paid when people pay their bills</li>
+<li>late charges</li>
+</ul>
+
+Anyway, one of the cool ideas that has come out of this
+thinking is to extract the billing cycle using the strategy
+pattern.
+
+What this means is that customers can HAVE a billing cycle
+for receiving invoices, and subscriptions HAVE a cycle for
+posting charges.
+
+Since each of these cycles lives in a class of its own, you
+can mix and match as you see fit. For example, you might
+post charges every day, but only send bills out on the first
+of the month.
+
+
+* Posting Charges
+
+A first thought is to just go through all due subscriptions
+and post charges for each.
+
+However, what happens if the subscription became due more
+than once between the last time we ran catchup() and today?
+We have to keep cycling through until we're caught up.
+
+So something like:
+
+Account.postCharges(self, fordate):
+    while 1:
+        due = self.dueSubscriptions()
+        if len(due)==0:
+            break
+        for sub in due:
+            sub.onDue()
+
+Subscription.onDue() should post a charge to the
+account and update nextDue
+
+We don't need to pass it any extra info, because it uses the
+cycle to calculate both the charge and next Due. The charge
+is posted on the current dueDate.
+
+* Events must be DateTimes
+
+---------------------------------------------------------------------------------
+--THE FOLLOWING IS OLD AND NO LONGER TRUE, BUT EXPLAINS NEED FOR DATETIME CLASS--
+---------------------------------------------------------------------------------
+
+If a statement posts on the same day as other events, there's a danger
+that these events wont show up on the correct statement, or will show 
+up twice. This is because I use dates instead of datetimes for 
+event.posted ...
+
+The database correctly uses datetimes, but the Date object doesn't
+handle them yet.
+
+The bug will manifest starting on the second statement, and it has
+to do with the first statement date.
+
+will it affect the end date on the statement? it doesn't seem to.
+
+fix is to have duckbill understand datetimes by next statement...
+
+
+* Sending Statements
+
+Statments are much simpler, because we won't need to send
+someone multiple statements for the same account all at
+once. (If multiple statements should have been sent, all the
+data would be consolidated onto a single statement)
+
+Provider.sendStatements():
+    for acc in self.dueAccounts()
+        acc.onDue()
+ 
+
+There are basically two parts to sending a statement.
+    - send it
+    - add an event saying that we sent it
+
+If it's due, the event should be a statement event. If
+it's not due, it should just be an informational event.
+
+
+* What's on the current statement?
+
+
+Current statement is all events between last statement date
+and today.
+
+A statement is just a read-only account that filters events by time.
+It also has a start and end balance.
+
+The display of a statement should include:
+    - customer information (name and address)
+    - subscription list - started, date, next bill date
+    - old balance
+    - new balance (old balance + charges - credits)
+    - list of all events in the time period</t>
+
+
+* When was the last statement?
+
+Last statement is the statement event with the biggest
+"posted" value. If no statement events, we want the
+open date for the account.
+
+
+* Web Interface
+
+** add/edit Customers
+  - subclass AdminApp
+  - no delete
+** add/edit Subscriptions 
+  - AdminApp, compare product-style thing in zikeshop.
+  - make sure new subscriptions have nextDuedate=now() by default
+  - no delete either, but mark as closed
+** add/edit/delete Events per Subscription
+  - should be similar to above.
+  - allow modifications of other event types
+  - manually enter payments.. balance is updated automatically
+  - delete is allowed
+
+* Future Enhancements
+
+** factor "account" from customer &amp; make composite w/subscription
+** command line interface? duckbill shell?
+** affiliate program support
+** enable charges/payments later the same day that the bill goes out
+   this probably  means using datetimes on all events
+** normalize services
+** prepackaged subscriptions (services)
+** allow users to suppress statements when 0 balance
+** allow grouping Subscriptions by Account (?)
+** auto bill customers and enter payment automatically
+** late fees
+** charge / credit / payment subtotals
+- Statement should provide subtotals of charges and credits.
+>> charges = sum([e.amount for e in statement.events if e.type==charge]
+>> credits = sum([e.amount for e in statement.events if e.type==credit]
+>> payments = sum([e.amount for e in statement.events if e.type==payment]
+** link Customer.tsAdd to the open event's posted date
+** maybe add some sort of auditing for deleting events
+
+
+* DeliveryMechanism
+
+could be extracted so you can have statements sent to customers
+via mail, email, etc, or have different rules for different 
+customers.
+
+   statement should be emailed to administrator and the customer
+   >> zikebase.sendmail(zebra.fetch("filename", statement))
+
+
+* Reports
+** graph users/accounts over time
+** report on cash flow for past months
+** generate a bill for a specific date
+** report on all subscriptions where nextDuedate is null
+** forecast cash flow for current month</t>

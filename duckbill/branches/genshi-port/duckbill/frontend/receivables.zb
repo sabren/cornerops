@@ -1,0 +1,49 @@
+
+* include dsp_head;
+
+* if only_overdue:
+    <a href="receivables.py">[show all]</a>
+    <h2>aging receivables (overdue)</h2>
+* el:
+    <a href="receivables.py?overdue=1">[show overdue]</a>
+    <h2>aging receivables</h2>
+    <p><i>Total balance for each customer, broken down by age.</i></p>
+
+* exec:
+    this, next = "even", "odd"
+    def rep(v):
+        if v==0: return "-"
+        else: return str(v)
+
+
+<table cellspacing="0" cellpadding="2" width="650">
+  <tr><th width="*" align="left">account</th>
+    <th align="left">brand</th>
+    <th align="left">status</th>
+    <th align="right">45+</th>
+    <th align="right">30+</th>
+    <th align="right">15+</th>
+    <th align="right">0+</th>
+    <th align="right">total</th>
+  </tr>
+
+  * for rows:
+      * exec:
+          this, next = next, this
+          fmtaging ='</td><td align="right">'.join([rep(v) for v in aging])
+      <tr class="{:this:}">
+        <td>{:account.brand:}</td>
+        <td><a href="index.py?action=show&what=account&ID={:account.ID:}">{:account.account:}</a></td>
+        <td>{:account.status:}</td>
+        <td align="right">{:fmtaging:}</td>
+        <td class="rowtotal" align="right">{:rowtotal:}</td>
+      </tr>
+
+  <tr>
+    <th>TOTAL:</th>
+    * exec:
+        totals = '</th><th align="right">'.join([rep(v) for v in coltotals])
+    <th align="right">{:totals:}</th>
+    <th style="background:white" align="right">{:grandtotal:}</th>
+  </tr>
+</table>

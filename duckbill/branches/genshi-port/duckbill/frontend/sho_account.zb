@@ -1,0 +1,189 @@
+*# duckbill customer display
+*# $Id: sho_account.zb,v 1.24 2007/06/25 13:16:26 sabren Exp $
+
+* include dsp_head;
+* exec:
+    from pytypes import Date
+    from pytypes import FixedPoint
+
+<!-- customer info -->
+<table align="left" width="60%">
+  <tr><td><b>
+      <a accesskey="`" href="index.py?action=edit&what=account&ID={:ID:}">{:account:}</a>
+      : {:fname:}&nbsp;{:lname:}</b> ({:status:})</td>
+
+      <td>main brand: <b>{:brand:}</b></td>
+  </tr>
+* if status=='closed':
+    <tr><td>
+    <b style="color:red">--this user is no longer active--</b><br>
+    </td></tr>
+
+<tr><td colspan="2">
+{:address1:}<br/>
+* if address2:
+    {:address2:}<br/>
+{:city:}, {:state:}&nbsp;{:postal:}<br/>
+{:countryCD:}
+email: <a href="mailto:{:email:}">{:email:}</a><br/>
+tel: {:phone:}<br/>
+statements: {:statementStrategy:}<br/>
+autobill: {:bool(autobill):}<br/>
+* if graced:
+    {:'<br/>'.join('<em>%s</em>' % g for g in graced):}
+</td></tr>
+
+* if status != 'closed':
+    <tr><td>
+    <form action="index.py" method="post">
+    <input type="hidden" name="action" value="close_account">
+    <input type="hidden" name="ID" value="{:ID:}">
+    [0] <b>close:</b> <input accesskey="0" type="text" name="reason"> 
+    <input type="submit" value="go">
+    </form>
+    </td></tr>
+
+* if not graced:
+    <tr><td>
+    <form action="index.py" method="post">
+    <input type="hidden" name="action" value="grace">
+    <input type="hidden" name="accountID" value="{:ID:}">
+    * exec:
+        until = Date("today")+14
+    <b>grace:</b> until: <input type="text" name="expires" size="9" value="{:until:}">
+    because: <input accesskey="0" type="text" name="note">
+    <input type="submit" value="go">
+    </form>
+    </td></tr>
+
+* if bool(autobill):
+    <tr><td>
+    <form action="index.py" method="post">
+    <input type="hidden" name="action" value="stop_autobill">
+    <input type="hidden" name="accountID" value="{:ID:}">
+    <input type="submit" value="stop autobill">
+    </form>
+    </td></tr>
+
+
+<tr><td colspan="2">opened: {:opened:} </td></tr>
+<tr><td colspan="2">nextDue: {:nextDue:}</td></tr>
+
+</table>
+
+
+
+
+
+<!-- subscriptions -->
+<table>
+<tr><td colspan="2" style="background:gold; color:black">subscriptions</td></tr>
+* for subscriptions:
+    * body:
+        <tr>
+          <td>
+            <a class="{:status:}" href="index.py?action=edit&what=subscription&ID={:ID:}"
+               >{:service:}: {:username:}</a></td>
+          <td>
+             ${:rate:}/{:cycLen[0]:} .. {:nextDue:}
+          </td>
+        </tr>
+<tr><td>&nbsp;</td></tr>
+
+<!-- tools -->
+<tr><td><a accesskey="1" href="index.py?action=create&what=subscription&accountID={:ID:}">[1] add subscription</a></td></tr>
+<tr><td><a accesskey="2" href="index.py?action=create&what=event&accountID={:ID:}">[2] add event</a></td></tr>
+<tr><td><a accesskey="3" href="index.py?action=catchup&accountID={:ID:}">[3] catchup</a></td></tr>
+</table>
+
+<br clear="left"/>
+<br/>
+
+<!-- events -->
+<form action="index.py" method="post">
+<table width="100%" border="0" cellspacing="0" cellpadding="2">
+<tr><td colspan="5" style="background:black; color:white">history</td></tr>
+
+* exec:
+    #@TODO: fix this!
+    import copy
+    history = copy.copy(events)
+    def byPosted(a, b):
+        return cmp(a["posted"], b["posted"])
+    history.sort(byPosted)
+    total = 0
+
+
+* for history:
+    * head:
+        <tr>
+          <td style="background:silver; color:black" width="15%">date</td>
+          <td style="background:silver; color:black" width="10%">event</td>
+          <td style="background:silver; color:black" width="65%">note</td>
+          <td align="right" style="background:silver; color:black" width="10%">amount</td>
+          <td aligh="right" style="background:silver; color:black" width="10%">balance</td>
+        </tr>
+        * exec:
+            toggle = "even"
+            lastMonth = lastYear = 0
+            sepMonth = sepYear = False
+
+    * body:
+        * exec:
+            if 1: sign = "" # @TODO: zebra bug?!? (dies w/o "if 1")
+            if event in ["charge", "debit"]:
+                total += FixedPoint(amount)
+            elif event in ["payment", "credit"]:
+                sign = "-"
+                total -= FixedPoint(amount)
+            toggle = ("even","odd")[toggle=="even"]
+
+            toggle = event
+            
+
+            thisYear = str(posted.y)
+            thisMonth = str(posted.y) + str(posted.m)
+            sepYear = thisYear != lastYear
+            sepMonth = (thisMonth != lastMonth) and not sepYear
+            lastMonth = thisMonth
+            lastYear = thisYear
+
+        * if sepMonth:
+            <tr class="sepMonth"><td colspan="5"></td></tr>
+        * ef sepYear:
+            <tr class="sepYear"><td colspan="5"></td></tr>
+
+        * if event == 'void':
+            * exec:
+               toggle = "void"
+
+        <tr class="{:toggle:}">
+          <td><input type="checkbox" name="eventID" value="{:ID:}"/>
+              {:Date(str(posted)).toUS():}</td>
+          <td><a href="index.py?action=edit&what=event&ID={:ID:}"
+              ><b>&nbsp;{:event:}&nbsp;</b></a></td>
+          <td width="*">{:note:}
+          * if (refnum) and (source=='paypal'):
+              (<a href="https://www.paypal.com/us/vst/id={:refnum:}">{:refnum:}</a>)
+          * ef refnum:
+              ({:refnum:})
+          </td>
+          <td align="right">{:sign:}{:amount:}</td>
+          <td align="right">{:total:}</td>
+        </tr>
+    * foot:
+        <tr>
+          <td colspan="5"
+              style="background: silver; color: black; text-align:right">
+              total: <b>{:total:}</b>
+          </td>
+        </tr>
+</table>
+
+<div id="balance">balance: <strong>${:total:}</strong></div>
+<input type="hidden" name="accountID" value="{:ID:}"/>
+<input type="submit" name="action" value="void"/>
+or [m]ove to account: 
+<input type="text" name="dest_account" value="junk" accesskey="m"/>
+<input type="submit" name="action" value="move_events"/>
+</form>

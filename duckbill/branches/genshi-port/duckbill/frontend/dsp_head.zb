@@ -1,0 +1,108 @@
+<html>
+<head>
+<title>duckbill</title>
+<style>
+body, td, th { 
+   background: #eeeeee;
+   font-family: verdana; font-size:10pt; 
+}
+tr.even td {
+   background: #ffffcc
+}
+tr.odd td {
+   background: gold
+}
+
+tr.sepMonth td {
+   background: silver;
+   height: 1px;
+   padding: 0px;
+}
+
+tr.sepYear td {
+   background: black;
+   height: 2px;
+   padding: 0px;
+}
+
+tr.void td {
+   background: #e0e0e0;
+   color: #333; 
+   font-style: italic;
+}
+
+tr.credit td {
+   background: #ccbbff;
+}
+
+tr.debit td {
+   background: #99ccff;
+}
+
+
+tr.charge td {
+   background: #ffffcc;
+}
+
+tr.payment td {
+   background: gold;
+}
+
+tr.close td, tr.close a {
+   background: black;
+   color: white;
+}
+
+
+a.closed {
+    font-style: italic;
+    color: #666666;
+}
+
+.navbar a {
+   text-decoration: none;
+   color: #330000;
+}
+
+
+tr.odd td.rowtotal{ background: #eeeeee; border-left: solid black 1px; }
+tr.even td.rowtotal{ background: white; border-left: solid black 1px; }
+
+#balance {
+  position: absolute;
+  left: 315px;
+  top: 90px;
+  background:white;
+  padding: 5px;
+  border: solid black 1px;
+}
+
+</style>
+</head>
+<body onload="document.getElementById('jumpto').focus();">
+
+<!-- navbar -->
+
+<form action="index.py" style="display:inline">
+
+<span class="navbar">
+&nbsp;<a accesskey="s" href="sales.py">[s]ales</a> |
+&nbsp;<a accesskey="c" href="actuals.py">a[c]tuals</a> |
+&nbsp;<a accesskey="r" href="receivables.py">[r]eceivables</a> |
+&nbsp;<a accesskey="o" href="income.py">inc[o]me</a> |
+&nbsp;<a accesskey="l" href="locked.py">[l]ocked</a> |
+&nbsp;<a accesskey="n" href="index.py?action=create&what=account">[n]ew</a> |
+</span>
+
+<input type="hidden" name="action" value="jump">
+&nbsp;[j]ump: <input accesskey="j" type="text" id="jumpto" name="jumpto">
+<input type="submit" value="go">
+</form>
+
+* for errors:
+    * head:
+        <br>
+    * body:
+        <p>ERROR: {:error:}</p>
+
+<hr/>
