@@ -79,5 +79,5 @@ allow_add = canAdd and dbs_left
 </py:if>
 
 </div>
-<xi:include href="master.gen"/>
+<xi:include href="layout.gen"/>
 </html>

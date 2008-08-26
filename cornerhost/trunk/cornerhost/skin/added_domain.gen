@@ -53,6 +53,6 @@ You may want to <a href="?action=email">create a mail rule</a>.</p>
 
 </div>
 
-<xi:include href="master.gen"/>
+<xi:include href="layout.gen"/>
 
 </html>

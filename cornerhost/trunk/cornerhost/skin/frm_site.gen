@@ -81,5 +81,5 @@ assert site, "there is no site associated with %s" % domName
 </form>
 
 </div>
-<xi:include href="master.gen"/>
+<xi:include href="layout.gen"/>
 </html>

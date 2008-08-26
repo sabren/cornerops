@@ -86,5 +86,5 @@ boxes.sort(lambda a,b: cmp(a.mailbox, b.mailbox))
   If you need more, please contact support.</em></p>
 </py:if>
 </div>
-<xi:include href="master.gen"/>
+<xi:include href="layout.gen"/>
 </html>

@@ -39,5 +39,5 @@ assert re.match("^(\w|_)+$", dbname), "invalid database name"
 
 <br clear="all"/>
 </div>
-<xi:include href="master.gen"/>
+<xi:include href="layout.gen"/>
 </html>

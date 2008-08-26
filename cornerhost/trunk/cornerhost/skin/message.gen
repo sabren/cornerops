@@ -6,6 +6,6 @@
     ${message}
   </div>
 </div>  
-<xi:include href="master.gen"/>
+<xi:include href="layout.gen"/>
 </html>
 
