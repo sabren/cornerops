@@ -75,7 +75,7 @@ class CornerApp(AbstractApp):
             '_clerk': self.uclerk.clerk }
         
         f = feature().invoke
-        result = f(*self.buildArgs(f, special, req, res, self.sess))
+        result = f(*self.buildArgs(f, special, req, self.sess))
         
         #@TODO: break this function into smaller pieces.
         #@TODO: use something like a 'platonic request' for per-request data.
