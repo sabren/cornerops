@@ -71,7 +71,7 @@
 	    ${rec.rectype}
 	  </td>
 	  <td>
-	    <py:if test="rectype=='MX'">
+	    <py:if test="rec.rectype=='MX'">
 	      <a href="user.app?action=edit_dns_mx&amp;domain=${sub.domain}&amp;ID=${rec.ID}"
 		 >${rec.priority} ${rec.value}</a>
 	    </py:if>

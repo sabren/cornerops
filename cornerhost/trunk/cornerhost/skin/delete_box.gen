@@ -31,8 +31,8 @@
   <py:for each="r in rules">
     <div py:strip="True" py:choose="r.virtuser=='(catchall)'">
       <li py:when="True"><a href="user.app?action=edit_catchall&amp;domName=${r.domain.domain}"
-			    ><em>${virtuser}</em> @${r.domain.domain}</a></li>
-      <li py:when="False"><a href="user.app?action=edit_rule&amp;virtuser=${virtuser}&amp;domainName=${r.domain.domain}">${virtuser}@${r.domain.domain}</a></li>
+			    ><em>${r.virtuser}</em> @${r.domain.domain}</a></li>
+      <li py:when="False"><a href="user.app?action=edit_rule&amp;virtuser=${r.virtuser}&amp;domainName=${r.domain.domain}">${r.virtuser}@${r.domain.domain}</a></li>
     </div>
   </py:for>
 </ul>
