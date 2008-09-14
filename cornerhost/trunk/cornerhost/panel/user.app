@@ -1,6 +1,6 @@
 
 ## public version of user.app  #################################
-from cornerhost import UserApp, UserClerk
+from cornerhost import UserApp
 from cornerhost.tiles import makeUserWebMap, GenshiTile
 from weblib import Finished, Redirect
 
