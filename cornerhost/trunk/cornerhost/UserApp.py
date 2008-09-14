@@ -1,7 +1,7 @@
 from cornerhost.grunts import UserClerk
 from cornerhost.features import panel, site, dns, email, remote, user
 import logging
-from platonic import AbstractApp
+import platonic
 import tiles
 import weblib
 
@@ -28,7 +28,7 @@ class DictWrap:
         return self.d.get(key, '0')
 
 
-class CornerApp(AbstractApp):
+class CornerApp(platonic.AbstractApp):
 
     def __init__(self, uclerk, default="list_sites"):
         super(CornerApp, self).__init__()
@@ -51,16 +51,6 @@ class CornerApp(AbstractApp):
         feature.action = action
         return feature
 
-
-    def specialArguments(self, req, res, **etc):
-        return {
-            "_req" : req ,
-            "_res" : res ,
-            "_sess": etc['_sess'],
-            "_user": etc['_user'],
-            "_clerk": etc['_clerk'],
-        }
-
         
     def invoke(self, req, res, feature, model=None):
 
@@ -75,7 +65,8 @@ class CornerApp(AbstractApp):
             '_clerk': self.uclerk.clerk }
         
         f = feature().invoke
-        result = f(*self.buildArgs(f, special, req, self.sess))
+
+        result = platonic.callWithKeys(f, special, req, self.sess)
         
         #@TODO: break this function into smaller pieces.
         #@TODO: use something like a 'platonic request' for per-request data.
