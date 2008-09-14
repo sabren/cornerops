@@ -28,23 +28,23 @@ class DropDatabaseCommand(MySQLFeature):
 
 
 class SetMySQLPasswordCommand(MySQLFeature):
-    def invoke(self, new1, new2):
+    def invoke(self, _user, new1, new2):
         try:
             pwd = extractNewPass(new1,new2)
             if "'" in pwd: raise ValueError("invalid password")
         except ValueError, e:
             raise Intercept(str(e))
-        self.user.getMySQL().setPassword(self.user.username, pwd)
+        _user.getMySQL().setPassword(_user.username, pwd)
 
 
 ## beaker commands ###############################
 
 class SetCronCommand(ControlPanelFeature):
-    def invoke(self, crontab=""):
+    def invoke(self, _user, crontab=""):
         if not crontab.endswith("\n"):
             crontab += "\n"
-        error = self.user.getBeaker().setcron(
-            self.user.username, crontab).strip()
+        error = _user.getBeaker().setcron(
+            _user.username, crontab).strip()
         if error:
             if ":" in error:
                 tempfilepath, line, msg = error.split(":",2)
@@ -54,12 +54,12 @@ class SetCronCommand(ControlPanelFeature):
 
 class SetPasswordCommand(ControlPanelFeature):
 
-    def invoke(self, old, new1, new2):
+    def invoke(self, _user, old, new1, new2):
         #@TODO: this ought to be universal or something. :/
         # it [was?] almost EXACTLY like SetBoxPasswordCommand
         try:
-            self.user.getBeaker().setpasswd(
-                self.user.username, old, extractNewPass(new1, new2))
+            _user.getBeaker().setpasswd(
+                _user.username, old, extractNewPass(new1, new2))
         except xmlrpclib.Fault, f:
             raise Intercept(f.faultString)
         except socket.error, e:
@@ -74,8 +74,8 @@ class AnalogFeature(ControlPanelFeature):
         path = req.get("path")
         assert path, "no path given"
         try:
-            ctype,content = self.user.getBeaker().getContent(
-                self.user.username, path)
+            ctype,content = _user.getBeaker().getContent(
+                _user.username, path)
             res.addHeader("Content-Type", ctype)
             res.write(zlib.decompress(base64.decodestring(content)))
         except Exception, e:

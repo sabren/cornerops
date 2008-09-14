@@ -1,10 +1,10 @@
 
 ## public version of user.app  #################################
-from cornerhost import UserApp
+from cornerhost import UserApp, UserClerk
 from cornerhost.tiles import makeUserWebMap, GenshiTile
 from weblib import Finished, Redirect
 
-app = UserApp(USER, CLERK, sess=SESS)
+app = UserApp(UserClerk(USER,CLERK), sess=SESS)
 app.default="list_sites"
 app.isAdmin=False
 try:

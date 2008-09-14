@@ -13,7 +13,7 @@ class RemoteFeaturesTest(unittest.TestCase):
         fred = self.uc.user
         u,c = self.uc.user, self.uc.clerk
         
-        cmd = remote.CreateDatabaseCommand(self.uc)
+        cmd = remote.CreateDatabaseCommand()
 
         #@TODO: instead of intercept, raise a specific error
         #(that can be mapped to Intercept in a generic way)
@@ -29,19 +29,19 @@ class RemoteFeaturesTest(unittest.TestCase):
         assert fred.getMySQL().dbs[fred.username] == ["fred_db"]
 
     def test_SetMySQLPasswordCommand(self):
-        cmd = remote.SetMySQLPasswordCommand(self.uc)
+        cmd = remote.SetMySQLPasswordCommand()
         self.assertRaises(Intercept, cmd.invoke,
-                          new1="a'b", new2="a'b")
-        cmd.invoke(new1="ab",new2="ab")
+                          self.uc.user, new1="a'b", new2="a'b")
+        cmd.invoke(self.uc.user, new1="ab",new2="ab")
         assert self.uc.user.getMySQL().pwd['fred'] == "ab"
 
 
     def test_SetCronCommand(self):
-        cmd = remote.SetCronCommand(self.uc)
-        cmd.invoke(crontab="test_needline")
+        cmd = remote.SetCronCommand()
         fred = self.uc.user
+        cmd.invoke(fred, crontab="test_needline")
         self.assertEquals("test_needline\n", fred.getBeaker().crontab)
-        cmd.invoke(crontab="test_okay\n")
+        cmd.invoke(fred, crontab="test_okay\n")
         self.assertEquals("test_okay\n", fred.getBeaker().crontab)
 
 if __name__=="__main__":

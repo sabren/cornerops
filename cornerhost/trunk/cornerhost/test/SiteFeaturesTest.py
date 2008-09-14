@@ -11,7 +11,7 @@ class SiteFeaturesTest(unittest.TestCase):
 
         self.assertEquals(1, len(uclerk.clerk.match(Site)))
 
-        cmd = site.DeleteSiteCommand(uclerk)
+        cmd = site.DeleteSiteCommand()
         cmd.invoke(_clerk=uclerk.clerk, _user=uclerk.user, name='fred.com')
 
         sites = uclerk.clerk.match(Site)
@@ -22,7 +22,7 @@ class SiteFeaturesTest(unittest.TestCase):
     def test_SaveSiteCommand(self):
         uclerk = personas.fredClerk()
         oldSiteExtra = uclerk.clerk.fetch(Site).extra
-        site.SaveSiteCommand(uclerk).invoke(
+        site.SaveSiteCommand().invoke(
             _clerk=uclerk.clerk,_user=uclerk.user,
             name='fred.com', haserrs=0, suExec=1, docroot='top',
             extra='this should be ignored')
@@ -36,13 +36,13 @@ class SiteFeaturesTest(unittest.TestCase):
     def test_SaveSiteCommand_bad(self):
         uclerk = personas.fredClerk()
         self.assertRaises(Intercept,
-            site.SaveSiteCommand(uclerk).invoke,
+            site.SaveSiteCommand().invoke,
                           _clerk=uclerk.clerk,_user=uclerk.user,
                           name='fred.com', haserrs=0, suExec=1, docroot='$@!?')
 
     def test_AdminSaveSiteCommand(self):
         uclerk = personas.fredClerk()
-        site.AdminSaveSiteCommand(uclerk).invoke(
+        site.AdminSaveSiteCommand().invoke(
             _clerk=uclerk.clerk,_user=uclerk.user,
             name='fred.com', haserrs=0, suExec=1, docroot='top',
             extra='valid admin extra')

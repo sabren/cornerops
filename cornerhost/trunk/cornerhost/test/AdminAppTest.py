@@ -10,15 +10,15 @@ class AdminAppTest(unittest.TestCase):
 
     def setUp(self):
         self.clerk=MockClerk(schema)
-        self.app = AdminApp(User(), self.clerk)
         self.sess = {"username":"fred"}
+        self.app = AdminApp(self.clerk, self.sess)
                     
         
     def test_UpdateUserCommand(self):
         fred = self.clerk.store(User(username="fred"))
         script = self.clerk.store(Plan(name="script"))
 
-        cmd = admin.UpdateUserCommand(self.clerk)
+        cmd = admin.UpdateUserCommand()
         req = {
             'status':'locked',
             'plan':'script',
@@ -46,7 +46,7 @@ class AdminAppTest(unittest.TestCase):
         def mockLoadUser(u,c):
             return MockUser()
 
-        cmd = admin.IsPasswdCommand(self.clerk)
+        cmd = admin.IsPasswdCommand()
         cmd.loadUser = mockLoadUser
         
         model = cmd.invoke(self.clerk, u, password="good")
@@ -64,7 +64,7 @@ class AdminAppTest(unittest.TestCase):
             cmd.invoke(_sess=self.sess, _clerk=self.clerk, jumpto=jumpto))
 
         # searching for wanda should succeed:
-        cmd = admin.JumpCommand(self.clerk)
+        cmd = admin.JumpCommand()
         self.assertRaises(Redirect, invoke, jumpto="wanda")
         assert self.sess["username"] == "wanda"
 
@@ -81,7 +81,7 @@ class AdminAppTest(unittest.TestCase):
         newbie = Signup(username="newbie")
         self.clerk.store(newbie)
 
-        cmd = admin.ReviewSignup(self.clerk)
+        cmd = admin.ReviewSignup()
         model = cmd.invoke(self.clerk, ID=newbie.ID)
         assert model.signup.username=="newbie"
 

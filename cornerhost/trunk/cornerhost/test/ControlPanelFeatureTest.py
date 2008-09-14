@@ -11,9 +11,7 @@ class ControlPanelFeatureTest(unittest.TestCase):
             def invoke(self, _req):
                 raise ValueError
             
-        uclerk = personas.fredClerk()
-        self.assertRaises(ValueError,
-            ThrowFeature(uclerk).handle, req={}, res=None, sess=None)
+        self.assertRaises(ValueError, ThrowFeature().invoke, _req={})
 
 
     def test_handle(self):
@@ -21,8 +19,7 @@ class ControlPanelFeatureTest(unittest.TestCase):
             def invoke(self, value, default='world!'):
                 return Model(x=value, y=default)
 
-        uclerk = personas.fredClerk()
-        model = EmptyFeature(uclerk).handle({"value":"hello!"}, None, None) 
+        model = EmptyFeature().invoke(value='hello!')
         self.assertEquals(model["x"], "hello!")
         self.assertEquals(model["y"], "world!")
 

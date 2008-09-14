@@ -9,13 +9,13 @@ import unittest
 class EmailFeaturesTest(unittest.TestCase):
     #@TODO: add test cases for ALL features.email classes
     def setUp(self):
-        self.uc = personas.fredClerk()
-        self.user = self.uc.user
-        self.clerk = self.uc.clerk
-        self.dom = self.uc.user.domains[0]
+        uc = personas.fredClerk()
+        self.user = uc.user
+        self.dom = uc.user.domains[0]
+        self.clerk = uc.clerk
         
     def test_SaveCatchallCommand(self):
-        cmd = email.SaveCatchallCommand(self.uc)
+        cmd = email.SaveCatchallCommand()
         req = {
             '_user': self.user,
             '_clerk': self.clerk,
@@ -27,7 +27,7 @@ class EmailFeaturesTest(unittest.TestCase):
         cmd.invoke(**req) # should work now
         
     def test_SaveRuleCommand(self):
-        cmd = email.SaveRuleCommand(self.uc)
+        cmd = email.SaveRuleCommand()
         req = {
             '_clerk': self.clerk, '_user': self.user,
             'ID': '1',
@@ -40,7 +40,7 @@ class EmailFeaturesTest(unittest.TestCase):
 
     def test_SaveRuleCommand_new(self):
         ruleCount = len(self.dom.rules)
-        cmd = email.SaveRuleCommand(self.uc)
+        cmd = email.SaveRuleCommand()
         req = {
             '_clerk': self.clerk, '_user': self.user,            
             'ID': None,
@@ -54,7 +54,7 @@ class EmailFeaturesTest(unittest.TestCase):
     def test_SaveRuleCommand_existing(self):
         ruleCount = len(self.dom.rules)
         # change the spam rule to report spam:
-        cmd = email.SaveRuleCommand(self.uc)
+        cmd = email.SaveRuleCommand()
         cmd.invoke(
             _clerk=self.clerk, _user=self.user,            
             ID=self.dom.rules[0].ID,
@@ -64,26 +64,26 @@ class EmailFeaturesTest(unittest.TestCase):
             mailto='report@spamtrapper.com')
         self.assertEquals(ruleCount, len(self.dom.rules),
                           "rule count should not change")
-        rules = self.uc.clerk.match(EmailRule)
+        rules = self.clerk.match(EmailRule)
         assert rules[0].virtuser == 'report'
         assert rules[0].mailto == 'report@spamtrapper.com'
         
 
     def test_DeleteRuleCommand(self):
-        cmd = email.DeleteRuleCommand(self.uc)
+        cmd = email.DeleteRuleCommand()
         cmd.invoke(self.user, self.clerk,
                    oldDom='fred.com', ID=self.dom.rules[0].ID)
 
     def test_CreateBoxCommand(self):
-        fred = self.uc.user
+        fred = self.user
         sess = {}
         c = self.clerk
         u = fred
         
         # if no quota, go for it:
         fred.plan.boxquota = Plan.UNLIMITED
-        self.uc.clerk.store(fred)        
-        cmd = email.CreateBoxCommand(self.uc)
+        self.clerk.store(fred)        
+        cmd = email.CreateBoxCommand()
         cmd.invoke(c,u, sess, mailbox="pop_asdf")
 
         # make sure password gets stored in session
@@ -93,15 +93,15 @@ class EmailFeaturesTest(unittest.TestCase):
 
         # enforce boxquota
         fred.plan.boxquota = 1
-        self.uc.clerk.store(fred)        
+        self.clerk.store(fred)        
         self.assertRaises(AssertionError, cmd.invoke, c,u, sess, mailbox='')
         
         fred.boxextra = 10
-        self.uc.clerk.store(fred)
+        self.clerk.store(fred)
         cmd.invoke(c,u, sess, mailbox="pop_ok")
 
         fred.plan.boxquota = Plan.FORBIDDEN
-        self.uc.clerk.store(fred)
+        self.clerk.store(fred)
         self.assertRaises(AssertionError, cmd.invoke, c,u, sess, None)
 
         # bounceback on error

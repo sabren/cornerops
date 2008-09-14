@@ -7,7 +7,7 @@ class SetBoxPasswordCommandTest(unittest.TestCase):
 
     def setUp(self):
         self.uc = personas.fredClerk()
-        self.cmd = email.SetBoxPasswordCommand(self.uc)
+        self.cmd = email.SetBoxPasswordCommand()
         self.box = "pop_fred_box"
         self.uc.user.boxes << Mailbox(mailbox=self.box)
         self.uc.clerk.store(self.uc.user)
