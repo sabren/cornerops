@@ -70,7 +70,8 @@ class SetPasswordCommand(ControlPanelFeature):
 
 class AnalogFeature(ControlPanelFeature):
     # note: this is handle(), not invoke()!! special case!
-    def handle(self, req, res, sess):
+    def invoke(self, _req, _res, _sess, _user):
+        req, res, sess = _req, _res, _sess
         path = req.get("path")
         assert path, "no path given"
         try:
