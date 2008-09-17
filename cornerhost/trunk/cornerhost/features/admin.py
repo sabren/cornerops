@@ -198,7 +198,7 @@ class IsPasswdCommand(UserSpecific):
 
 
 def reverse(string):
-    return "".join(reversed(chars))
+    return "".join(reversed(string))
                    
 class UserDelCommand(UserSpecific):
     def invoke(self, _clerk, _sess, reversed):
