@@ -1,6 +1,7 @@
 import unittest
+from decimal import Decimal
 from duckbill import Event, Account
-from pytypes import Date, FixedPoint
+from pytypes import Date
 
 def unearned(events, cutoff=Date("today")):
     a = Account()
@@ -74,17 +75,18 @@ class UnearnedIncomeTest(unittest.TestCase):
 
         # In a single month, we're fully vested at the end of the month.
         # With a yearly charge, the vesting happens slowly over time.
-        self.assertEquals(FixedPoint(e.percentVested(Date("2/1/2000"))), 10.16)
-        self.assertEquals(FixedPoint(e.percentVested(Date("5/1/2000"))), 39.67)
-        self.assertEquals(FixedPoint(e.percentVested(Date("7/1/2000"))), 59.67)
-        self.assertEquals(FixedPoint(e.percentVested(Date("10/1/2000"))), 89.84)
-        self.assertEquals(FixedPoint(e.percentVested(Date("10/31/2000"))),99.67)
-        self.assertEquals(FixedPoint(e.percentVested(Date("11/1/2000"))), 100)
-        self.assertEquals(FixedPoint(e.percentVested(Date("12/1/2000"))), 100)
+        d = Decimal
+        self.assertEquals(e.percentVested(Date("2/1/2000")), d('10.16'))
+        self.assertEquals(e.percentVested(Date("5/1/2000")), d('39.67'))
+        self.assertEquals(e.percentVested(Date("7/1/2000")), d('59.67'))
+        self.assertEquals(e.percentVested(Date("10/1/2000")), d('89.84'))
+        self.assertEquals(e.percentVested(Date("10/31/2000")), d('99.67'))
+        self.assertEquals(e.percentVested(Date("11/1/2000")), d('100.00'))
+        self.assertEquals(e.percentVested(Date("12/1/2000")), d('100.00'))
 
         # valueOn should multiply by amount
         e.amount = 200
-        self.assertEquals(e.valueOn(Date("2/1/2000")), 20.32)
+        self.assertEquals(e.valueOn(Date("2/1/2000")), d('20.32'))
 
 
 if __name__=="__main__":

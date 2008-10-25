@@ -1,4 +1,4 @@
-from pytypes import FixedPoint, Date
+from pytypes import Date
 from duckbill import Account
 
 class Receivables:

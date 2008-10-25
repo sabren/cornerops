@@ -6,7 +6,7 @@ __ver__="$Id: EventTest.py,v 1.6 2003/02/27 21:34:57 sabren Exp $"
 import unittest
 import duckbill
 from duckbill import Event
-from pytypes import FixedPoint
+
 
 class EventTest(unittest.TestCase):
 
@@ -19,7 +19,7 @@ class EventTest(unittest.TestCase):
         """
         e = Event()
         e.amount = None
-        assert e.amount is None # make sure no error trying FixedPoint(None)
+        assert e.amount is None
         e.amount = 1
 
     def test_NoneAmount(self):

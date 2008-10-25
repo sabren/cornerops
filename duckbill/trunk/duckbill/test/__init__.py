@@ -1,7 +1,6 @@
 
 import duckbill
 import strongbox
-from pytypes import FixedPoint
 
 ###[ shared spec stuff ]#############
 
@@ -18,4 +17,5 @@ def fakeAccount():
     return duckbill.Account(account="duckbill.spec account")
 
 def fakeSubscription():
-    return duckbill.Subscription(service='blog', username='ftempy', rate=FixedPoint('10.00'))
+    return duckbill.Subscription(service='blog', username='ftempy',
+                                 rate='10.00')

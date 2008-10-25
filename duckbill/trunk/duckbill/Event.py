@@ -1,5 +1,5 @@
 from pytypes import DateTime, Date
-from pytypes import FixedPoint
+from decimal import Decimal
 from pytypes import toDateTime
 from strongbox import *
 from strongbox import Strongbox
@@ -22,7 +22,7 @@ class Event(Strongbox):
                        'statement','note','close','debit',"void"])
     posted = attr(DateTime, default="now")
     maturity = attr(Date, default=None)
-    amount = attr(FixedPoint, default=0)
+    amount = attr(Decimal, default=0)
     note = attr(str)
     adminnote = attr(str)
     source = attr(str, default='n/a',
@@ -50,7 +50,7 @@ class Event(Strongbox):
         return (self.amount or 0) * (self.sign or 0)
     def valueOn(self, date):
         if self.event=="charge":
-            return (self.percentVested(date)* self.amount)/100.0
+            return (self.percentVested(date)* self.amount)/100
         else:
             return self.value
         
@@ -79,4 +79,4 @@ class Event(Strongbox):
 
             totalDays = abMature - abPosted
             pastDays = abWhen - abPosted
-            return 100.0 * pastDays / totalDays
+            return Decimal('%.2f' % (100.0 * pastDays / totalDays))

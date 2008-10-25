@@ -1,8 +1,8 @@
 import duckbill
+from decimal import Decimal
 from duckbill import Event
 from duckbill import Cyclic
 from pytypes import Date
-from pytypes import FixedPoint
 from strongbox import *
 
 class Subscription(Cyclic):
@@ -16,7 +16,7 @@ class Subscription(Cyclic):
     service = attr(str)
     username = attr(str)
     note  = attr(str)
-    rate = attr(FixedPoint)
+    rate = attr(Decimal)
     opened = attr(Date, default="today")
     closed = attr(Date)
     cycLen = attr(str, okay=['month', 'year'], default='month')

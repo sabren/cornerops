@@ -20,7 +20,7 @@ from FrontEndApp import FrontEndApp
 from Receivables import Receivables
 
 import time
-from pytypes import FixedPoint
+from decimal import Decimal
 import config
 
 #@TODO: consolidate this db map with the one in .weblib.py
@@ -43,6 +43,6 @@ def newEvent(event, acct=None, posted=None, note=None, amount=None):
         e.posted = DateTime("now")
     else:
         raise TypeError, "Event posted with illegal DateTime type"
-    e.amount = amount or FixedPoint("0.00")
+    e.amount = amount or Decimal("0.00")
     e.note = note or ""
     return e

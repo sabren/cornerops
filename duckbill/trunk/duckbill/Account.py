@@ -1,10 +1,10 @@
 import duckbill
 import zebra
+from decimal import Decimal
 from duckbill import Cyclic
 from duckbill import Event, Grace, Statement, Subscription
 from duckbill import EncryptedCard
 from pytypes import Date, DateTime
-from pytypes import FixedPoint
 from handy import sendmail
 from strongbox import attr, link, linkset, Strongbox
 
@@ -94,7 +94,7 @@ class Account(Cyclic):
         Return account balance at given time, or now if no time given.
         """
         cutoff = time or duckbill.NOW
-        bal = FixedPoint(0.0)
+        bal = Decimal('0.0')
         for e in self.events:
             if e.posted < cutoff:
                 bal += ((e.amount or 0) * e.sign)
