@@ -5,7 +5,8 @@ from clerks import MockClerk, Schema
 from storage import MockStorage
 from cornerhost import BandwidthGrunt, User, Usage, Plan
 from duckbill import Account
-from pytypes import Date, FixedPoint
+from pytypes import Date
+from decimal import Decimal
 from handy import GIGA
 from strongbox import *
 
@@ -22,7 +23,7 @@ class BandwidthGruntTest(unittest.TestCase):
     
     def setUp(self):
         self.clerk = MockClerk(Schema(cornerhost.config.DBMAP))
-        self.rate = FixedPoint("1.23") # dollars per gig... :)
+        self.rate = Decimal("1.23") # dollars per gig... :)
         self.bwg = BandwidthGrunt(self.clerk, self.rate)
         
     def test_findDueAccounts(self):

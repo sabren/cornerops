@@ -1,7 +1,8 @@
 from cornerhost import remote
 import cornerhost
 from strongbox import *
-from pytypes import DateTime, FixedPoint
+from pytypes import DateTime
+from decimal import Decimal
 
 mx, datetime = None, None
 try:    
@@ -19,9 +20,9 @@ class Server(Strongbox):
     name = attr(str, default="")
     shortname = attr(str)
     ipaddress = attr(str)
-    load1 = attr(FixedPoint)
-    load5 = attr(FixedPoint)
-    load15= attr(FixedPoint)
+    load1 = attr(Decimal)
+    load5 = attr(Decimal)
+    load15= attr(Decimal)
     stamp = attr(DateTime)
     space = attr(str)
     memory = attr(str)

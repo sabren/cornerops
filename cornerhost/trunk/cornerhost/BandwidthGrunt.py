@@ -1,7 +1,7 @@
 
 from cornerhost import User
 from duckbill import Account, Event
-from pytypes import PythonicRange, FixedPoint
+from pytypes import PythonicRange
 from handy import daysInMonthPriorTo, GIGA
 
 class BandwidthGrunt(object):
