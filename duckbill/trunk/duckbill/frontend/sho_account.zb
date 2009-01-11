@@ -4,7 +4,7 @@
 * include dsp_head;
 * exec:
     from pytypes import Date
-    from pytypes import FixedPoint
+    from decimal import Decimal
 
 <!-- customer info -->
 <table align="left" width="60%">
@@ -132,10 +132,10 @@ autobill: {:bool(autobill):}<br/>
         * exec:
             if 1: sign = "" # @TODO: zebra bug?!? (dies w/o "if 1")
             if event in ["charge", "debit"]:
-                total += FixedPoint(amount)
+                total += Decimal(amount)
             elif event in ["payment", "credit"]:
                 sign = "-"
-                total -= FixedPoint(amount)
+                total -= Decimal(amount)
             toggle = ("even","odd")[toggle=="even"]
 
             toggle = event

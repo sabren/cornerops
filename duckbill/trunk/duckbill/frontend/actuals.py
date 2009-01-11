@@ -1,7 +1,7 @@
 from shared import *
 import duckbill
 import zebra
-from pytypes import FixedPoint
+from decimal import Decimal
 cur = SQL.cursor()
 
 # finally, I get to apply the crosstab story!
@@ -44,8 +44,8 @@ lastYear = 'x'
 
 for row in cur.fetchall():
     period = row[0]
-    charges = FixedPoint(row[1])
-    payments= FixedPoint(row[2])
+    charges = Decimal(row[1])
+    payments= Decimal(row[2])
     diff = charges - payments
 
     year = str(period)[-1]

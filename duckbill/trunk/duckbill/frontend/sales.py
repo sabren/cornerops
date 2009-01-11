@@ -1,7 +1,7 @@
 from shared import *
 import duckbill
 import zebra
-from pytypes import FixedPoint
+from decimal import Decimal
 cur = SQL.cursor()
 
 # finally, I get to apply the crosstab story!
@@ -43,8 +43,8 @@ renewals = [0] * 12; periodnum = 0
 
 for row in cur.fetchall():
     period = row[0]
-    monthly = FixedPoint(row[1])
-    yearly = FixedPoint(row[2])
+    monthly = Decimal(row[1])
+    yearly = Decimal(row[2])
     base = totM
 
     renew = renewals[periodnum % 12]

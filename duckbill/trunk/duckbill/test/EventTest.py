@@ -15,7 +15,7 @@ class EventTest(unittest.TestCase):
 
     def test_amount(self):
         """
-        amount should always be a fixedpoint or None
+        amount should always be a decimal or None
         """
         e = Event()
         e.amount = None
