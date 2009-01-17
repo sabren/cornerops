@@ -44,8 +44,8 @@ lastYear = 'x'
 
 for row in cur.fetchall():
     period = row[0]
-    charges = Decimal(row[1])
-    payments= Decimal(row[2])
+    charges = Decimal(str(row[1]))
+    payments= Decimal(str(row[2]))
     diff = charges - payments
 
     year = str(period)[-1]

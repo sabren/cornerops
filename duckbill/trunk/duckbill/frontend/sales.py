@@ -43,8 +43,8 @@ renewals = [0] * 12; periodnum = 0
 
 for row in cur.fetchall():
     period = row[0]
-    monthly = Decimal(row[1])
-    yearly = Decimal(row[2])
+    monthly = Decimal(str(row[1]))
+    yearly = Decimal(str(row[2]))
     base = totM
 
     renew = renewals[periodnum % 12]
