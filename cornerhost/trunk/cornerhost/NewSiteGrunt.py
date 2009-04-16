@@ -56,8 +56,8 @@ class NewSiteGrunt(object):
         if self.clerk.match(Domain, domain=domain):
             raise ValueError, self.ERR["dup"] % domain
 
-        if domain.startswith("www."):
-            raise ValueError, self.ERR["www"]
+        #if domain.startswith("www."):
+        #    raise ValueError, self.ERR["www"]
 
         if not subsokay:
             for d in self.user.domains:
