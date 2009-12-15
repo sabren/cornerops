@@ -1,5 +1,5 @@
 
-import piddle as pid
+import sping as pid
 
 class LimitChart(object):
     """

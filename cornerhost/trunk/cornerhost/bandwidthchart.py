@@ -6,7 +6,7 @@ import string
 from pytypes import Date
 from handy import readable
 from LimitChart import LimitChart
-import piddlePIL as pid
+import sping.PIL as pid
 from sixthday import App
 from cornerhost import User
 
