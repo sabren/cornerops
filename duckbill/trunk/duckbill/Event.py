@@ -73,10 +73,10 @@ class Event(Strongbox):
             return 0
         else:
             # return percentage of time until maturity
-            abPosted = self.posted.toMx().absdate
-            abWhen = when.toMx().absdate
-            abMature = self.maturity.toMx().absdate
-
-            totalDays = abMature - abPosted
-            pastDays = abWhen - abPosted
-            return Decimal('%.2f' % (100.0 * pastDays / totalDays))
+            abPosted = self.posted.to_datetime()
+            abWhen = when.to_datetime()
+            abMature = self.maturity.to_datetime()
+            
+            total = abMature - abPosted
+            past = abWhen - abPosted
+            return Decimal('%.2f' % (100.0 * past.days / total.days))
