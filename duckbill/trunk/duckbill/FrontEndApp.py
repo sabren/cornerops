@@ -18,14 +18,14 @@ class FrontEndApp(sixthday.AdminApp):
     def act_(self):
         self.create_account()
 
-    def jumpto_accounts(self, accounts):
+    def jumpto_accounts(self, accounts, searchOnly):
         if len(accounts) == 0:
             raise IndexError("not found")
-        elif len(accounts) == 1:
+        elif len(accounts) == 1 and not searchOnly:
             self.input["ID"] = accounts[0].ID
             self.show_account()
         else:
-            self.write("<h1>multiple accounts found.</h1>")
+            self.write("<h1>search results:</h1>")
             self.write("<ul>")
             for a in accounts:
                 self.write('<li><a href="index.py?action=jump&jumpto=')
@@ -35,38 +35,37 @@ class FrontEndApp(sixthday.AdminApp):
                 self.write('</a></li>')
             self.write("<ul>")
 
+
     def act_jump(self):
         if self.input.get("jumpto"):
             jump = self.input["jumpto"]
             try:
-                if jump.count(" "):
+                if jump.startswith("#"):
+                    self.input["ID"]=self.clerk.match(Event,
+                                                      refnum=jump[1:])[0].ID
+                    self.edit_event()
+                    
+
+                elif jump.count(" "):
                     fn, ln = jump.split(" ", 1)
                     kw = {}
                     if fn != "*": kw['fname']=fn
                     if ln != "*": kw['lname']=ln
-                    self.jumpto_accounts(
-                        self.clerk.match(Account, **kw))
-
+                    res = self.clerk.match(Account, **kw)
                 elif jump.count("@"):
-                    self.jumpto_accounts(
-                        self.clerk.match(Account, email=jump))
-
-                elif jump.startswith("#"):
-                    self.input["ID"]=self.clerk.match(Event,
-                                                      refnum=jump[1:])[0].ID
-                    self.edit_event()
+                    res = self.clerk.match(Account, email=jump)
                 else:
-                    acc = self.clerk.match(Account, account=jump)
-                    if acc:
-                        self.input["ID"]=acc[0].ID
-                        self.show_account()
-                    else:
-                        sub = self.clerk.match(Subscription, username=jump)
-                        if sub:
-                            self.input["ID"]=sub[0].account.ID
-                            self.show_account()
-                        else:
-                            self.write("%s sub/acct not found" % jump)
+                    res = self.clerk.match(Account, account=jump)
+                    
+                if not res:
+                    subs = self.clerk.match(Subscription, username=jump)
+                    res = [s.account for s in subs]
+
+                if res:
+                    self.jumpto_accounts(res, self.input.has_key('searchOnly'))
+                else:
+                    self.write("%s sub/acct not found" % jump)
+                        
             except IndexError:
                 self.write("%s not found" % jump)
                 
